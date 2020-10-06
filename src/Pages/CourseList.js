@@ -1,10 +1,6 @@
 import React from "react";
-import { Layout,List, Avatar, Space ,Tabs} from 'antd';
-import { MessageOutlined, LikeOutlined, StarOutlined } from '@ant-design/icons';
-import "../Assets/Css/CourseListPage.css";
-
-const {Content}=Layout;
-const { TabPane } = Tabs;
+import {Avatar, List, Space} from "antd";
+import {LikeOutlined, MessageOutlined, StarOutlined} from "@ant-design/icons";
 
 const listData = [];
 for (let i = 0; i < 23; i++) {
@@ -19,14 +15,12 @@ for (let i = 0; i < 23; i++) {
             'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
     });
 }
-
 const IconText = ({ icon, text }) => (
     <Space>
         {React.createElement(icon)}
         {text}
     </Space>
 );
-
 class CourseList extends React.Component{
     constructor(props) {
         super(props);
@@ -80,47 +74,9 @@ class CourseList extends React.Component{
             </div>
         );
     };
+
     toCourse(href) {
-            this.props.toCourse('/home/messages');
+        this.props.history.push('/home/courses/courseDemo');
     }
 }
-
-class CourseListPage extends React.Component{
-    constructor(props) {
-        super(props);
-        this.state={
-            tabKey:"1"
-        };
-        this.changeTabKey=this.changeTabKey.bind(this);
-    }
-    changeTabKey(key) {
-        this.setState({tabKey:key});
-    }
-
-    toCourse=(href)=> {
-        this.props.history.push('/home/courseDemo');
-    };
-
-    render() {
-        return (
-            <Content style={{ padding: '50px' }}>
-                <div>
-                    <Tabs defaultActiveKey="1" onChange={this.changeTabKey}>
-                        <TabPane tab="正在进行" key="1">
-                            <CourseList tabKey={this.state.tabKey} toCourse={this.toCourse}/>
-                        </TabPane>
-                        <TabPane tab="已结束" key="2">
-                            <CourseList tabKey={this.state.tabKey}/>
-                        </TabPane>
-                        <TabPane tab="所有课程" key="3">
-                            <CourseList tabKey={this.state.tabKey}/>
-                        </TabPane>
-                    </Tabs>
-                    <a onClick={() => this.toCourse()}>oko</a>
-                </div>
-            </Content>
-        );
-    }
-}
-
-export default CourseListPage;
+export default CourseList;

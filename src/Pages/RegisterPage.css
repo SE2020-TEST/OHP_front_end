@@ -1,0 +1,29 @@
+.verificationCode{
+    width: 100%;
+    text-align: center;
+    vertical-align:middle;
+    transition: all 0.5s;
+    cursor: pointer;
+    /*length:100px;*/
+}
+.verificationCode span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+.verificationCode span:after {
+    content: '»';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+.verificationCode:hover span {
+    padding-right: 25px;
+}
+.verificationCode:hover span:after {
+    opacity: 1;
+    right: 0;
+}
