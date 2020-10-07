@@ -16,8 +16,16 @@ export default class LoginPage extends React.Component {
     }
 
     Login() {
-        if (this.state.email.length > 0 && this.state.PW.length > 0) {
+        if (this.state.ID.length > 0 && this.state.PW.length > 0) {
             // logIn(this.state.email, this.state.PW, this.props.history);
+            if(this.state.ID==="123")
+            {
+                this.props.history.push("/home");
+            }
+            else{
+                alert("密码/ID错误");//message
+                window.location.href = "/login";
+            }
         }
     }
 

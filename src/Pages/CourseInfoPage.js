@@ -39,6 +39,7 @@ class CourseInfoPage extends React.Component{
     postIcon = () => {
     };
     Submit() {
+        alert("修改成功");
     }
     render() {
         return (

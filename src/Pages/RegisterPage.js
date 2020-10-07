@@ -63,6 +63,8 @@ export default class RegisterPage extends React.Component {
             //         // logIn(this.state.email, this.state.PW, this.props.history);
             //     }
             // );
+            alert("注册成功");//message
+            window.location.href = "/login";
         }
     }
     onChange = e => {

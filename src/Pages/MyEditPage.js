@@ -28,7 +28,7 @@ export default class MyEditPage extends React.Component {
         super(props);
         this.state = {
             ID:"",
-            email: "",
+            // email: "",
             nickname: "",//nick与否都无关，其实老师关心的只是学号（你叫卢本伟都没有关系）
             oldpw:"",
             PW: "",
@@ -43,10 +43,8 @@ export default class MyEditPage extends React.Component {
 
     }
     submitRegister() {
-        if ((this.state.email.length > 0)
-            && (this.state.nickname.length > 0)
-            && (this.state.phonenumber.length > 0)
-            && (this.state.ID.length > 0)
+        if ((this.state.pw2.length > 0)
+            && (this.state.pw1.length > 0)
             && (this.state.PW.length > 0)) {
             // postFetch('/user/register',
             //     {
@@ -58,6 +56,7 @@ export default class MyEditPage extends React.Component {
             //         // logIn(this.state.email, this.state.PW, this.props.history);
             //     }
             // );
+            alert("修改成功");
         }
     }
     onChange = e => {

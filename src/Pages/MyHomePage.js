@@ -35,6 +35,8 @@ class MyHomePage extends React.Component{
     postIcon = () => {
     };
     Submit() {
+        alert("修改成功");//message
+        // window.location.href = "/login";
     }
     render() {
         return (

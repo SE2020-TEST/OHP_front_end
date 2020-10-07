@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout,List, Avatar, Space ,Tabs} from 'antd';
+import { Layout,List, Avatar, Space ,Tabs,Button} from 'antd';
 import { MessageOutlined, LikeOutlined, StarOutlined } from '@ant-design/icons';
 import "../Assets/Css/CourseListPage.css";
 
@@ -10,7 +10,7 @@ const listData = [];
 for (let i = 0; i < 23; i++) {
     listData.push({
         // href: 'https://ant.design',
-        href: '/home/courses/courseDemo',
+        href: '/home/courseDemo',
         title: `ant design part ${i}`,
         avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
         description:
@@ -26,6 +26,9 @@ const IconText = ({ icon, text }) => (
         {text}
     </Space>
 );
+
+// const operations = <Button onClick={this.createCourse}>新建课程</Button>;
+
 
 class CourseList extends React.Component{
     constructor(props) {
@@ -81,9 +84,10 @@ class CourseList extends React.Component{
         );
     };
     toCourse(href) {
-            this.props.toCourse('/home/messages');
+            this.props.toCourse(href);
     }
 }
+
 
 class CourseListPage extends React.Component{
     constructor(props) {
@@ -98,14 +102,20 @@ class CourseListPage extends React.Component{
     }
 
     toCourse=(href)=> {
-        this.props.history.push('/home/courseDemo');
+        this.props.history.push(href);
     };
-
+    createCourse=()=>
+    {
+        this.props.history.push("/home/create");
+    };
     render() {
         return (
             <Content style={{ padding: '50px' }}>
                 <div>
-                    <Tabs defaultActiveKey="1" onChange={this.changeTabKey}>
+                    <div style={{ marginBottom: 16 }}>
+                        <Button onClick={this.createCourse}>新建课程</Button>
+                    </div>
+                    <Tabs defaultActiveKey="1" onChange={this.changeTabKey}  tabBarExtraContent={<Button onClick={this.createCourse}>新建课程</Button>}>
                         <TabPane tab="正在进行" key="1">
                             <CourseList tabKey={this.state.tabKey} toCourse={this.toCourse}/>
                         </TabPane>
@@ -115,9 +125,11 @@ class CourseListPage extends React.Component{
                         <TabPane tab="所有课程" key="3">
                             <CourseList tabKey={this.state.tabKey}/>
                         </TabPane>
+                        {/*<h1>hello</h1>*/}
                     </Tabs>
-                    <a onClick={() => this.toCourse()}>oko</a>
+                    {/*<a onClick={() => this.toCourse()}>oko</a>*/}
                 </div>
+                {/*<h1>hello</h1>*/}
             </Content>
         );
     }

@@ -9,6 +9,7 @@ import MyPage from "./MyPage";
 import LoginPage from "./LoginPage";
 import CalendarPage from "./CalendarPage";
 import CoursePage from "./CoursePage";
+import CourseCreatePage from "./CourseCreatePage";
 
 const {Header, Content, Footer} = Layout;
 
@@ -42,6 +43,7 @@ class HomePage extends React.Component {
                     <Switch>
                         <Route path={'/home/courseDemo'} component={CoursePage}/>
                         <Route path={'/home/courses'} component={CourseListPage}/>
+                        <Route path={'/home/create'} component={CourseCreatePage}/>
                         <Route path={'/home/messages'} component={MessagePage}/>
                         <Route path={'/home/calendar'} component={CalendarPage}/>
                         <Route path={'/home/my'} component={MyPage}/>
