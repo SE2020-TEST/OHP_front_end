@@ -1,10 +1,11 @@
 import React from "react";
-import { Layout,List, Avatar, Space ,Tabs,Button} from 'antd';
+import { Layout,List, Avatar, Space ,Tabs,Button,Input} from 'antd';
 import { MessageOutlined, LikeOutlined, StarOutlined } from '@ant-design/icons';
 import "../Assets/Css/CourseListPage.css";
 
 const {Content}=Layout;
 const { TabPane } = Tabs;
+const { Search } = Input;
 
 const listData = [];
 for (let i = 0; i < 23; i++) {
@@ -112,10 +113,19 @@ class CourseListPage extends React.Component{
         return (
             <Content style={{ padding: '50px' }}>
                 <div>
-                    <div style={{ marginBottom: 16 }}>
-                        <Button onClick={this.createCourse}>新建课程</Button>
-                    </div>
-                    <Tabs defaultActiveKey="1" onChange={this.changeTabKey}  tabBarExtraContent={<Button onClick={this.createCourse}>新建课程</Button>}>
+                    {/*<div style={{ marginBottom: 16 }}>*/}
+                    {/*    <Button onClick={this.createCourse}>新建课程</Button>*/}
+                    {/*</div>*/}
+                    <Tabs defaultActiveKey="1" onChange={this.changeTabKey}  tabBarExtraContent={
+                        <div>
+                            <Button onClick={this.createCourse}>新建课程</Button>
+                            <Search
+                                placeholder="input search text"
+                                onSearch={value => console.log(value)}
+                                style={{ margin:10,width: 1000 }}
+                            />
+                        </div>
+                    }>
                         <TabPane tab="正在进行" key="1">
                             <CourseList tabKey={this.state.tabKey} toCourse={this.toCourse}/>
                         </TabPane>

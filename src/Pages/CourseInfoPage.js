@@ -55,6 +55,7 @@ class CourseInfoPage extends React.Component{
                         <img src={this.state.icon} alt="avatar" style={{width: '100%'}}/>
                     </Upload>
                     {this.state.newIcon && <Button onClick={this.postIcon}>上传新头像</Button>}
+                    <Button type="primary" danger>删除课程</Button>
                     <hr/>
                     <Card title="课程信息">
                         <Card type="inner" title="课程名称" extra={<Button type={this.state.edit1 ? "primary" : "ghost"}
