@@ -6,10 +6,11 @@ import "../Assets/Css/HomePage.css"
 import CourseListPage from "./CourseListPage";
 import MessagePage from "./MessagePage";
 import MyPage from "./MyPage";
-import LoginPage from "./LoginPage";
 import CalendarPage from "./CalendarPage";
+import CoursePage from "./CoursePage";
+import CourseCreatePage from "./CourseCreatePage";
 
-const {Header, Content, Footer} = Layout;
+const {Header, Footer} = Layout;
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -17,6 +18,12 @@ class HomePage extends React.Component {
         this.state={
             positiveKey: "1",
         }
+    }
+
+    componentDidMount() {
+        let key=sessionStorage.getItem("topKey");
+        if(key!==undefined)
+            this.setState({positiveKey:key})
     }
 
     render() {
@@ -28,8 +35,12 @@ class HomePage extends React.Component {
                             <CloudOutlined/>&nbsp;&nbsp;云作业
                         </div>
                     </div>
-                    <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}
-                          selectedKeys={this.state.positiveKey} onClick={(e) => this.setState({positiveKey: e.key})}>
+                    <Menu theme="dark"
+                          mode="horizontal"
+                          defaultSelectedKeys={[sessionStorage.getItem("topKey")===undefined?"1":sessionStorage.getItem("topKey")]}
+                          selectedKeys={this.state.positiveKey}
+                          onClick={(e) => {sessionStorage.setItem("topKey",e.key);this.setState({positiveKey: e.key})
+                    }}>
                         <Menu.Item key="1"><Link to={'/home/courses'}><BookOutlined />课程</Link></Menu.Item>
                         <Menu.Item key="2"><Link to={'/home/messages'}><MessageOutlined />消息</Link></Menu.Item>
                         <Menu.Item key="3"><Link to={'/home/calendar'}><CalendarOutlined />日历</Link></Menu.Item>
@@ -43,10 +54,12 @@ class HomePage extends React.Component {
                         <Route path={'/home/messages'} component={MessagePage}/>
                         <Route path={'/home/calendar'} component={CalendarPage}/>
                         <Route path={'/home/my'} component={MyPage}/>
+                        <Route path={'/home/course'} component={CoursePage}/>
+                        <Route path={'/home/createCourse'} component={CourseCreatePage}/>
                         <Redirect exact path={'/home'} to={'/home/courses'}/>
                     </Switch>
                 </div>
-                <Footer style={{textAlign: 'center'}}>Ant Design ©2018 Created by Ant UED</Footer>
+                <Footer style={{textAlign: 'center'}}>©2020 云作业平台</Footer>
             </Layout>
         );
     }
