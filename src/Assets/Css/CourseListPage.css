@@ -1,5 +1,6 @@
 .card-container p {
     margin: 0;
+    /*background-image: url("");*/
 }
 .card-container > .ant-tabs-card .ant-tabs-content {
     height: 120px;

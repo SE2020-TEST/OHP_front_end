@@ -1,11 +1,40 @@
 .login-form-forgot {
     float: right;
+    font-size: 20px;
 }
 .login-form-button {
     width: 100%;
+    height: 40px;
+    font-size: 20px;
 }
 .login-form {
     max-width: 300px;
+    /*max-height:100px;*/
     margin: 0 auto;
+
 }
 
+#body{
+    max-width: 3000px;
+    height: 1050px;
+    padding: 250px 0;
+    background-image: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603108745275&di=f46b9ed0e8010e245b859743c561fa6c&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2017-10-14%2F59e1bf1001cfb.jpg%3Fdown");
+    vertical-align:middle;
+}
+#form{
+    background-color: rgba(255,255,255,0.8);
+    /*flood-opacity: 0.3;*/
+}
+#IDInput
+{
+    font-size: 18px;
+}
+#pwInput
+{
+    font-size: 18px;
+}
+/*#divider*/
+/*{*/
+/*    !*border:5px solid red;*!*/
+/*    font-family: "Times New Roman", Georgia, Serif, serif;*/
+/*}*/
