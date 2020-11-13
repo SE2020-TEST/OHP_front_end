@@ -3,8 +3,8 @@ import {Button, Checkbox, Form, Input, Radio,Divider} from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import 'antd/dist/antd.css';
 import {LockOutlined, UpCircleOutlined , UserOutlined, AntCloudOutlined} from '@ant-design/icons';
-import '../Assets/Css/LoginPage.css';
-// import {logIn} from "../Functions/login";
+import './LogInPage.css';
+import {logIn} from "../Functions/login";
 
 
 export default class LoginPage extends React.Component {
@@ -25,15 +25,15 @@ export default class LoginPage extends React.Component {
 
     Login() {
         if (this.state.ID.length > 0 && this.state.PW.length > 0) {
-            // logIn(this.state.email, this.state.PW, this.props.history);
-            if(this.state.ID==="123")
-            {
-                this.props.history.push("/home");
-            }
-            else{
-                alert("密码/ID错误");//message
-                window.location.href = "/login";
-            }
+            logIn(this.state.ID, this.state.PW, this.props.history);
+            // if(this.state.ID==="123")
+            // {
+            //     this.props.history.push("/home");
+            // }
+            // else{
+            //     alert("密码/ID错误");//message
+            //     window.location.href = "/login";
+            // }
         }
     }
 

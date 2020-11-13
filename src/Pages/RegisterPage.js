@@ -1,13 +1,13 @@
 import React from "react";
-import {Button, Form, Input, Select,Radio} from 'antd';
+import {Button, Form, Input, Select, Radio, Alert} from 'antd';
 import 'antd/dist/antd.css';
 import './RegisterPage.css';
-import {TaobaoCircleOutlined,RedditOutlined,UserOutlined,AntCloudOutlined} from '@ant-design/icons';
-// import {postFetch} from "../Functions/fetchRequest";
-// import {logIn} from "../Functions/login";
+import {TaobaoCircleOutlined, RedditOutlined, UserOutlined, AntCloudOutlined} from '@ant-design/icons';
+import {postFetch} from "../Functions/fetchRequest";
+import {logIn} from "../Functions/login";
 
 const {Option} = Select;
-const { Search } = Input;
+const {Search} = Input;
 
 const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -27,17 +27,19 @@ export default class RegisterPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ID:"",
+            ID: "",
             email: "",
             nickname: "",//nick与否都无关，其实老师关心的只是学号（你叫卢本伟都没有关系）
             PW: "",
             pw1: "",
             pw2: "",
             phonenumber: "",
-            value:0,
-            check:"",
-            liked:false,
-            count:10,
+            value: 0,
+            check: "",
+            liked: false,
+            count: 10,
+            errmsg: false,
+            emailmsg: false
         }
 
     }
@@ -46,6 +48,43 @@ export default class RegisterPage extends React.Component {
         this.props.history.push('/login');
     }
 
+    testID() {
+        alert("testID");
+        postFetch('/user/checkid',
+            {
+                uid: this.state.ID,
+                role: this.state.role
+            }, (rsp) => {
+                if (rsp)//if true
+                {
+                    this.setState({
+                        errmsg: true
+                    })
+                }
+            }
+        );
+    }
+
+    testEmail() {
+        // alert("testEmail");
+        this.setState({
+            emailmsg: true
+        })
+        postFetch('/user/checkemail',
+            {
+                email: this.state.email,
+                role: this.state.role
+            }, (rsp) => {
+                if (rsp)//if true
+                {
+                    this.setState({
+                        emailmsg: true
+                    })
+                }
+            }
+        );
+
+    }
 
     submitRegister() {
         if ((this.state.email.length > 0)
@@ -53,35 +92,40 @@ export default class RegisterPage extends React.Component {
             && (this.state.phonenumber.length > 0)
             && (this.state.ID.length > 0)
             && (this.state.PW.length > 0)) {
-            // postFetch('/user/register',
-            //     {
-            //         userName: this.state.nickname,
-            //         email: this.state.email,
-            //         password: this.state.PW,
-            //         phoneNumber: this.state.phonenumber
-            //     }, (rsp) => {
-            //         // logIn(this.state.email, this.state.PW, this.props.history);
-            //     }
-            // );
+            postFetch('/user/register',
+                {
+                    uid: this.ID,
+                    name: this.state.nickname,
+                    email: this.state.email,
+                    password: this.state.PW,
+                    phone: this.state.phonenumber,
+                    vcode: this.state.check,
+                    role: this.state.role
+                }, (rsp) => {
+                    // logIn(this.state.email, this.state.PW, this.props.history);
+                }
+            );
             alert("注册成功");//message
             window.location.href = "/login";
         }
     }
+
     onChange = e => {
         console.log('radio checked', e.target.value);
         this.setState({
             value: e.target.value,
         });
     };
+
     countDown() {
-        let count  = this.state.count;
+        let count = this.state.count;
         if (count === 1) {//当为0的时候，liked设置为true，button按钮显示内容为 获取验证码
             this.setState({
                 count: 10,
                 liked: false,
             })
         } else {
-            count=count-1;
+            count = count - 1;
             this.setState({
                 count: count,
                 liked: true,
@@ -89,10 +133,18 @@ export default class RegisterPage extends React.Component {
             setTimeout(() => this.countDown(), 1000)//每一秒调用一次
         }
     }
-    getCode()
-    {
+
+    getCode() {
         console.log("getting");
         //这里是联系后端去发送邮件
+        postFetch('/user/vcode',
+            {
+                email: this.email,
+            }, (rsp) => {
+                //?其实返回什么都不用做，那么？要不要换一种方法？get？算了还是post
+                // logIn(this.state.email, this.state.PW, this.props.history);
+            }
+        );
         this.setState({
             liked: true,
         });
@@ -100,8 +152,8 @@ export default class RegisterPage extends React.Component {
     }
 
     render() {
-        let count=this.state.count;
-        console.log("count:"+count);
+        let count = this.state.count;
+        console.log("count:" + count);
         return (
             <div>
                 <div style={{
@@ -112,10 +164,10 @@ export default class RegisterPage extends React.Component {
                     <div style={{fontSize: "80px", color: "black", textAlign: "center", verticalAlign: "middle"}}>
                         <AntCloudOutlined/>云作业
                     </div>
-                    <div style={{color: "black", textAlign: "center", verticalAlign: "middle",margin: "10px"}}>
+                    <div style={{color: "black", textAlign: "center", verticalAlign: "middle", margin: "10px"}}>
                         <Radio.Group onChange={this.onChange} value={this.state.value} buttonStyle="solid" size="large">
-                            <Radio.Button value={0}><RedditOutlined />学生</Radio.Button>
-                            <Radio.Button value={1}><UserOutlined />老师</Radio.Button>
+                            <Radio.Button value={0}><RedditOutlined/>学生</Radio.Button>
+                            <Radio.Button value={1}><UserOutlined/>老师</Radio.Button>
                         </Radio.Group>
                     </div>
                     <Form
@@ -131,9 +183,11 @@ export default class RegisterPage extends React.Component {
                     >
                         <Form.Item
                             name="ID"
+                            // validateStatus="success"
+                            // help=" "
                             rules={[
                                 {
-                                    message:'只能输入数字',
+                                    message: '只能输入数字',
                                     pattern: /^[0-9]+$/
                                 },
                                 {
@@ -142,13 +196,25 @@ export default class RegisterPage extends React.Component {
                                 },
                             ]}
                         >
-                            <Input
-                                id="IDInput"
-                                placeholder={"输入ID"}
-                                onChange={(e) => {
-                                    this.setState({ID: e.target.value})
-                                }}
-                            />
+                            <div>
+                                <Input
+                                    id="IDInput"
+                                    placeholder={"输入ID"}
+                                    onChange={(e) => {
+                                        this.setState({
+                                            ID: e.target.value,
+                                            errmsg: false
+                                        })
+                                    }}
+                                    onBlur={() => this.testID()
+                                    }
+                                />
+                                {this.state.errmsg === true ?
+                                    <Alert message="该ID已被使用" type="error" showIcon/>
+                                    : <span/>
+                                }
+                            </div>
+
                         </Form.Item>
                         <Form.Item
                             name="email"
@@ -163,13 +229,23 @@ export default class RegisterPage extends React.Component {
                                 },
                             ]}
                         >
-                            <Input
-                                id="emailInput"
-                                placeholder={"输入邮箱"}
-                                onChange={(e) => {
-                                    this.setState({email: e.target.value})
-                                }}
-                            />
+                            <div>
+                                <Input
+                                    id="emailInput"
+                                    placeholder={"输入邮箱"}
+                                    onChange={(e) => {
+                                        this.setState({
+                                            email: e.target.value,
+                                            emailmsg: false
+                                        })
+                                    }}
+                                    onBlur={() => this.testEmail()}
+                                />
+                                {this.state.emailmsg === true ?
+                                    <Alert message="该邮箱已被使用" type="error" showIcon/>
+                                    : <span/>
+                                }
+                            </div>
                         </Form.Item>
 
                         <Form.Item
@@ -289,7 +365,7 @@ export default class RegisterPage extends React.Component {
                             name="check"
                             rules={[
                                 {
-                                    message:'只能输入数字',
+                                    message: '只能输入数字',
                                     pattern: /^[0-9]+$/
                                 },
                                 {
@@ -344,7 +420,7 @@ export default class RegisterPage extends React.Component {
                                         onClick={() => this.getCode()}//点击此按钮获取验证码
                                         className={`verificationCode`}
                                     >
-                                        <span>{!this.state.liked ? '获取验证码':("("+count+")秒后重发")}</span>
+                                        <span>{!this.state.liked ? '获取验证码' : ("(" + count + ")秒后重发")}</span>
                                         {/*'（60）秒后重发'*/}
                                     </Button>}
                             />
