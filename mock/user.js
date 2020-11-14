@@ -4,6 +4,36 @@ function getFakeCaptcha(req, res) {
 
 export default {
   // 支持值为 Object 和 Array
+  'GET  /api/user': {
+    username: '李华',
+    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
+    userid: '00000001',
+    email: 'livingsu@sjtu.edu.cn',
+    profile: '你好，云作业平台！',
+    identity: '学生',
+    notifyCount: 12,
+    unreadCount: 11,
+    address: '上海市闵行区上海交通大学',
+    phone: '12345678',
+  },
+
+  'POST /api/user/password': (req, res) => {
+    const { password } = req.query;
+    
+    if (password == "mypassword") {
+      res.send({
+        code: true
+      });
+      return;
+    }
+    else {
+      res.send({
+        code: false
+      });
+      return;
+    }
+  },
+
   'GET /api/currentUser': {
     name: 'Serati Ma',
     avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
@@ -54,6 +84,7 @@ export default {
     address: '西湖区工专路 77 号',
     phone: '0752-268888888',
   },
+  
   // GET POST 可省略
   'GET /api/users': [
     {

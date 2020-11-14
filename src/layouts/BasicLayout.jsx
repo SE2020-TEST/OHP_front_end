@@ -103,6 +103,7 @@ const BasicLayout = (props) => {
   const { formatMessage } = useIntl();
   return (
     <ProLayout
+      title={"云作业平台"}
       logo={logo}
       formatMessage={formatMessage}
       onCollapse={handleMenuCollapse}

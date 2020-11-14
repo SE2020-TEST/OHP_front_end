@@ -8,9 +8,9 @@ const proSettings = {
   fixSiderbar: true,
   colorWeak: false,
   menu: {
-    locale: true,
+    local: false, //关闭国家化
   },
-  title: 'Ant Design Pro',
+  title: '云作业平台',
   pwa: false,
   iconfontUrl: '',
 };
