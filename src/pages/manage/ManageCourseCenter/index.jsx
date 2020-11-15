@@ -5,10 +5,11 @@ import { Menu } from 'antd';
 import CourseInfoView from './components/CouseInfoView';
 import HwListView from './components/HwListView';
 import HwInfoView from './components/HwInfoView';
+import HwCreateView from './components/HwCreateView';
 import styles from './style.less';
 const { Item } = Menu;
 
-class CourseCenter extends Component {
+class ManageCourseCenter extends Component {
   main = undefined;
 
   constructor(props) {
@@ -17,13 +18,17 @@ class CourseCenter extends Component {
       courseinfo: '课程详情',
       hwlist: '作业列表',
       hwinfo: '作业详情',
+      hwcreate: '新建作业',
+      userlist: '学生列表',
     };
     this.state = {
       mode: 'inline',
       titleMap,
       selectKey: 'courseinfo',
-      sid: this.props.location.state.sid,
-      title:this.props.location.state.title,
+      //sid: this.props.location.state.sid,
+      //title:this.props.location.state.title,
+      sid:2,
+      title:"123",
       hwid:undefined,
     };
   }
@@ -92,6 +97,12 @@ class CourseCenter extends Component {
       case 'hwinfo':
         return <HwInfoView hwid={this.state.hwid}/>;
 
+      case 'hwcreate':
+        return <HwCreateView/>;
+        
+      case 'userlist':
+        return <CourseInfoView/>;
+
       default:
         break;
     }
@@ -129,4 +140,4 @@ class CourseCenter extends Component {
   }
 }
 
-export default CourseCenter;
+export default ManageCourseCenter;

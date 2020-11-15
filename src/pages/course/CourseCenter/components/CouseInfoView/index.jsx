@@ -1,22 +1,9 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Upload, Form, message,Tooltip,Avatar  } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { connect, FormattedMessage, formatMessage } from 'umi';
+import { ProfileOutlined,BookOutlined} from '@ant-design/icons';
+import { Avatar,Descriptions,Card,Divider  } from 'antd';
+import { connect } from 'umi';
 import React, { Component } from 'react';
-import styles from './CourseInfoView.less';
-const { Option } = Select; // 头像组件 方便以后独立，增加裁剪之类的功能
 
-const AvatarView = ({ avatar }) => (
-  <>
-    <div className={styles.avatar_title}>
-      <FormattedMessage id="accountsettings.basic.avatar" defaultMessage="Avatar" />
-    </div>
-    <div className={styles.avatar}>
-      <img src={avatar} alt="avatar" />
-    </div>
-  </>
-);
-
+const { Meta } = Card;
 
 class CourseInfoView extends Component {
   view = undefined;
@@ -58,18 +45,29 @@ class CourseInfoView extends Component {
 
   render() {
     const { courseInfo } = this.props;
-    console.log("courseinfo:")
-    console.log(courseInfo)
 
     return (
-      <div className={styles.baseView}>
-        
-        <div className={styles.left}>
-          
-        </div>
-        <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
-        </div>
+      <div>
+        <Card style={{ width: "100%", marginTop: 16 }} bordered={false}>
+          <Meta
+            avatar={
+              <Avatar shape="square" size={80} src={courseInfo.avatar} />
+            }
+      
+            description={
+              <Descriptions title={courseInfo.title}>
+              <Descriptions.Item label={"任课教师"}>{courseInfo.teacher}</Descriptions.Item>
+              <Descriptions.Item >{courseInfo.year}{courseInfo.semester}</Descriptions.Item>
+              <Descriptions.Item label={"周数"}>{courseInfo.duration}</Descriptions.Item>
+            </Descriptions>}
+          />
+          <Divider />
+          <div><ProfileOutlined />&nbsp;课程简介</div>
+          <Card style={{ width: "100%", margin: 16 }} bordered={false}>{courseInfo.intro}</Card >
+          <Divider />
+          <div><BookOutlined />&nbsp;课程教材 </div>
+          <Card style={{ width: "100%", margin: 16 }} bordered={false}>{courseInfo.textbook}</Card >
+        </Card>
       </div>
     );
   }

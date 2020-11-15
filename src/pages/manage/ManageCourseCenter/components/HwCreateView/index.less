@@ -2,7 +2,9 @@
 
 .baseView {
   display: flex;
-  padding-top: 24px;
+  padding-top: 12px;
+  min-width: 400px;
+  max-width: 400px;
 
   :global {
     .ant-legacy-form-item .ant-legacy-form-item-control-wrapper {
@@ -10,10 +12,8 @@
     }
   }
 
-  .AvatarTitle {
-    width:100%;
-    // min-width: 224px;
-    // max-width: 448px;
+  .left {
+    width:350px;
   }
   .right {
     flex: 1;

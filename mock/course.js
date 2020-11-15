@@ -28,6 +28,8 @@ const intros = [
     '那时候我只会想自己想要什么，从不想自己拥有什么',
 ];
 
+const textbooks=titles;
+
 const teachers = [
     '张峰',
     '周志华',
@@ -69,6 +71,7 @@ for(let i=0;i<8;++i){
             title: titles[i % titles.length],
             avatar: avatars[i % avatars.length],
             intro: intros[i % intros.length],
+            textbook:textbooks[i%textbooks.length],
             teacher: teachers[i % teachers.length],
             year: years[i % years.length],
             semester: semesters[i % semesters.length],

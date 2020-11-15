@@ -171,6 +171,12 @@ export default defineConfig({
                   component: './CalendarView',
                 },
                 {
+                  name: '管理课程中心',
+                  icon: 'CalendarOutlined',
+                  path: '/manageCourseCenter',
+                  component: './manage/ManageCourseCenter',
+                },
+                {
                   component: './404',
                 },
               ],

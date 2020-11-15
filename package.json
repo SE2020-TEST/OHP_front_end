@@ -52,6 +52,7 @@
     "@ant-design/pro-table": "^2.9.8",
     "@umijs/route-utils": "^1.0.33",
     "antd": "^4.7.0",
+    "braft-editor": "^2.3.9",
     "classnames": "^2.2.6",
     "less": "^3.12.2",
     "lodash": "^4.17.11",
