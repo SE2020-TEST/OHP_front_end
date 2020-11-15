@@ -1,19 +1,15 @@
-import { ProfileOutlined,BookOutlined} from '@ant-design/icons';
-import { Avatar,Descriptions,Card,Divider  } from 'antd';
+import { ProfileOutlined, BookOutlined } from '@ant-design/icons';
+import { Avatar, Descriptions, Card, Divider } from 'antd';
 import { connect } from 'umi';
 import React, { Component } from 'react';
 
 const { Meta } = Card;
 
 class CourseInfoView extends Component {
-  view = undefined;
-
-  constructor(props){
+  constructor(props) {
     super(props);
-
     this.state = {
       sid: this.props.sid,
-
     }
   }
 
@@ -53,13 +49,13 @@ class CourseInfoView extends Component {
             avatar={
               <Avatar shape="square" size={80} src={courseInfo.avatar} />
             }
-      
+
             description={
               <Descriptions title={courseInfo.title}>
-              <Descriptions.Item label={"任课教师"}>{courseInfo.teacher}</Descriptions.Item>
-              <Descriptions.Item >{courseInfo.year}{courseInfo.semester}</Descriptions.Item>
-              <Descriptions.Item label={"周数"}>{courseInfo.duration}</Descriptions.Item>
-            </Descriptions>}
+                <Descriptions.Item label={"任课教师"}>{courseInfo.teacher}</Descriptions.Item>
+                <Descriptions.Item >{courseInfo.year}{courseInfo.semester}</Descriptions.Item>
+                <Descriptions.Item label={"周数"}>{courseInfo.duration}</Descriptions.Item>
+              </Descriptions>}
           />
           <Divider />
           <div><ProfileOutlined />&nbsp;课程简介</div>

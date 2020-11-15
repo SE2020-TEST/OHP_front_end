@@ -46,15 +46,13 @@ for(let i=0;i<158;++i){
 export default {
     'POST  /hw/list': (req, res) => {
         const { sid } = req.query;
-        console.log("hwlist")
-        console.log(sid);
-
+        // console.log("hwlist")
+        // console.log(sid);
         return res.json(hwList);
     },
 
     'POST /hw/info': (req, res) => {
         const { hwid } = req.query;
-        console.log("hwid:" + hwid);
         res.send(hwList.find(item => { return item.id == hwid }));
     },
 };

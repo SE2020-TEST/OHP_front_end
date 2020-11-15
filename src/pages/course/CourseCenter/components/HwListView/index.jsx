@@ -1,5 +1,5 @@
 import React from "react";
-import {  Card, List, Avatar, Space } from "antd";
+import { Card, List, Avatar, Space } from "antd";
 import { connect } from 'umi';
 import logo from './logo.svg';
 
@@ -19,7 +19,6 @@ class HwListView extends React.Component {
     }
 
     onClicked(record) {
-        console.log(record);
         this.props.parent.goToHwInfoView("hwinfo", record.id);
     }
 
@@ -48,7 +47,7 @@ class HwListView extends React.Component {
                                         <div><b>计分：</b>{!item.hasCorrected ? '--' : item.score}/100</div>
                                     </Space>
                                 }
-                                onClick={()=>{this.onClicked(item)}}
+                                onClick={() => { this.onClicked(item) }}
                             />
                         </List.Item>
                     )}

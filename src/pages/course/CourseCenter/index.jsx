@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'umi';
 import { GridContent,PageContainer } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import CourseInfoView from './components/CouseInfoView';

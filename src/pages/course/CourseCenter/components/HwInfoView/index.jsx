@@ -1,5 +1,5 @@
 import React from "react";
-import { Divider, Button, Card, Form,Space } from "antd";
+import { Divider, Button, Card, Form } from "antd";
 import BraftEditor from 'braft-editor'
 import { connect } from 'umi';
 import './BraftEditor.css';
@@ -21,23 +21,9 @@ class HwInfoView extends React.Component {
         dispatch({
             type: 'courseCenter/fetchHwInfo',
             payload: {
-                hwid:this.props.hwid,
+                hwid: this.props.hwid,
             },
         })
-    }
-    
-
-    onClicked(record) {
-        console.log(record);
-    }
-
-    changeTab(key) {
-        console.log(key);
-    }
-
-    goToHwCheckPage(record) {
-        console.log(record);
-        this.props.history.push('/home/course/hw/check');
     }
 
     validatorCommit = (rule, value, callback) => {
@@ -64,7 +50,6 @@ class HwInfoView extends React.Component {
         const { hwInfo } = this.props;
 
         if (JSON.stringify(hwInfo) == "{}") {
-            console.log("not render")
             return "";
         }
 
@@ -80,9 +65,9 @@ class HwInfoView extends React.Component {
                     </div>
                 </div>
                 <Divider />
-                <div style={{fontSize:16,paddingBottom:20}}>
-                    <div style={{float:"left"}}><b>截止时间：</b>{hwInfo.deadline}之前</div>
-                    <div  style={{float:"right"}}><b>提交：</b>一份上传文件</div>
+                <div style={{ fontSize: 16, paddingBottom: 20 }}>
+                    <div style={{ float: "left" }}><b>截止时间：</b>{hwInfo.deadline}之前</div>
+                    <div style={{ float: "right" }}><b>提交：</b>一份上传文件</div>
                 </div>
                 <Divider />
                 <div className={"hw-title1"}>作业内容</div>
@@ -145,6 +130,6 @@ class HwInfoView extends React.Component {
     }
 }
 
-export default  connect(({ courseCenter }) => ({
+export default connect(({ courseCenter }) => ({
     hwInfo: courseCenter.hwInfo,
 }))(HwInfoView);
