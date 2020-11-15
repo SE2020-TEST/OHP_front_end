@@ -49,40 +49,42 @@ export default class RegisterPage extends React.Component {
     }
 
     testID() {
-        alert("testID");
-        postFetch('/user/checkid',
-            {
-                uid: this.state.ID,
-                role: this.state.role
-            }, (rsp) => {
-                if (rsp)//if true
+        if (this.state.ID.length > 0) {
+            // alert("testID");
+            postFetch('/user/checkid',
                 {
-                    this.setState({
-                        errmsg: true
-                    })
+                    uid: this.state.ID,
+                    role: this.state.value
+                }, (rsp) => {
+                    console.log(rsp);
+                    if (rsp)//if true
+                    {
+                        this.setState({
+                            errmsg: true
+                        })
+                    }
                 }
-            }
-        );
+            );
+        }
     }
 
     testEmail() {
         // alert("testEmail");
-        this.setState({
-            emailmsg: true
-        })
-        postFetch('/user/checkemail',
-            {
-                email: this.state.email,
-                role: this.state.role
-            }, (rsp) => {
-                if (rsp)//if true
+        if (this.state.email.length > 0) {
+            postFetch('/user/checkemail',
                 {
-                    this.setState({
-                        emailmsg: true
-                    })
+                    email: this.state.email,
+                    // role: this.state.value 只传入一个email就可以了(那甚至可以不用body，算了都无所谓)
+                }, (rsp) => {
+                    if (rsp)//if true
+                    {
+                        this.setState({
+                            emailmsg: true
+                        })
+                    }
                 }
-            }
-        );
+            );
+        }
 
     }
 
@@ -94,19 +96,21 @@ export default class RegisterPage extends React.Component {
             && (this.state.PW.length > 0)) {
             postFetch('/user/register',
                 {
-                    uid: this.ID,
+                    uid: this.state.ID,
                     name: this.state.nickname,
                     email: this.state.email,
                     password: this.state.PW,
                     phone: this.state.phonenumber,
                     vcode: this.state.check,
-                    role: this.state.role
+                    role: this.state.value
                 }, (rsp) => {
+                    alert("注册成功!!!!!");
+                    window.location.href = "/login";
                     // logIn(this.state.email, this.state.PW, this.props.history);
                 }
             );
-            alert("注册成功");//message
-            window.location.href = "/login";
+            // alert("else");//message
+            //
         }
     }
 
@@ -372,14 +376,14 @@ export default class RegisterPage extends React.Component {
                                     required: true,
                                     message: '请输入验证码',
                                 },
-                                ({getFieldValue}) => ({//这一部分验证应该放到另一个地方做——那个login函数那里。
-                                    validator(rule, value) {
-                                        if (!value || getFieldValue('password') === value) {
-                                            return Promise.resolve();
-                                        }
-                                        return Promise.reject('验证码错误');
-                                    },
-                                }),
+                                // ({getFieldValue}) => ({//这一部分验证应该放到另一个地方做——那个login函数那里。
+                                //     validator(rule, value) {
+                                //         if (!value || getFieldValue('password') === value) {
+                                //             return Promise.resolve();
+                                //         }
+                                //         return Promise.reject('验证码错误');
+                                //     },
+                                // }),
                             ]}
                         >
                             {/*<Input*/}
