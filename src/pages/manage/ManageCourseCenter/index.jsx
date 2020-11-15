@@ -6,6 +6,7 @@ import CourseInfoView from './components/CouseInfoView';
 import HwListView from './components/HwListView';
 import HwInfoView from './components/HwInfoView';
 import HwCreateView from './components/HwCreateView';
+import HwCheckView from './components/HwCheckView';
 import styles from './style.less';
 const { Item } = Menu;
 
@@ -19,6 +20,7 @@ class ManageCourseCenter extends Component {
       hwlist: '作业列表',
       hwinfo: '作业详情',
       hwcreate: '新建作业',
+      hwcheck: '批改作业',
       userlist: '学生列表',
     };
     this.state = {
@@ -95,10 +97,13 @@ class ManageCourseCenter extends Component {
         return <HwListView parent={this}/>;
 
       case 'hwinfo':
-        return <HwInfoView hwid={this.state.hwid}/>;
+        return <HwInfoView parent={this} hwid={this.state.hwid}/>;
 
       case 'hwcreate':
         return <HwCreateView/>;
+
+      case 'hwcheck':
+        return <HwCheckView hwid={this.state.hwid}/>;
         
       case 'userlist':
         return <CourseInfoView/>;
@@ -109,7 +114,8 @@ class ManageCourseCenter extends Component {
 
     return null;
   };
-  goToHwCreateView(newKey){
+  
+  changeView(newKey){
     this.setState({ selectKey: newKey });
   }
 

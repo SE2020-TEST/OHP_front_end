@@ -1,24 +1,23 @@
-import { queryCourseInfo } from './service';
+import { querySubmission } from './service';
 
 const Model = {
   namespace: 'manageCourseCenter',
   state: {
-    courseInfo: {},
-    hwinfo:{},
+    submission:{},//作业提交情况
   },
   effects: {
-    *fetchCourseInfo({ payload, callback }, { call, put }) {
-      const response = yield call(queryCourseInfo, payload);
+    *fetchSubmission({ payload }, { call, put }) {
+      const response = yield call(querySubmission, payload);
       yield put({
-        type: 'saveCourseInfo',
+        type: 'saveSubmission',
         payload: response,
       });
     },
 
   },
   reducers: {
-    saveCourseInfo(state, action) {
-      return { ...state, courseInfo: action.payload || {} };
+    saveSubmission(state, action) {
+      return { ...state, submission: action.payload || {} };
     },
   },
 };

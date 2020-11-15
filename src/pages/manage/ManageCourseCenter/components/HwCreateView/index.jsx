@@ -1,5 +1,4 @@
 import { Button, Input, Form, message, DatePicker, Card } from 'antd';
-import { connect, FormattedMessage, } from 'umi';
 import React, { Component } from 'react';
 import moment from 'moment';
 import BraftEditor from 'braft-editor'
@@ -125,4 +124,4 @@ class HwCreateView extends Component {
     }
 }
 
-export default connect()(HwCreateView);
+export default HwCreateView;

@@ -1,51 +1,9 @@
 import React from "react";
-import { Divider, Button, Space, Upload, message, Table,Tabs,Progress,Card} from "antd";
-import {UploadOutlined} from '@ant-design/icons';
+import { Divider, Button, Space, message, Table, Tabs, Progress, Card, Avatar } from "antd";
+import { connect } from 'umi';
 import './index.css'
 
 const { TabPane } = Tabs;
-
-const props = {
-    name: 'file',
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-    headers: {
-        authorization: 'authorization-text',
-    },
-    onChange(info) {
-        if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
-    },
-    defaultFileList: [
-        {
-            uid: '1',
-            name: 'xxx.png',
-            status: 'done',
-            response: 'Server Error 500', // custom error message to show
-            url: 'http://www.baidu.com/xxx.png',
-        },
-        {
-            uid: '2',
-            name: 'yyy.png',
-            status: 'done',
-            url: 'http://www.baidu.com/yyy.png',
-        },
-        {
-            uid: '3',
-            name: 'zzz.png',
-            status: 'error',
-            response: 'Server Error 500', // custom error message to show
-            url: 'http://www.baidu.com/zzz.png',
-        },
-    ],
-};
-
-
 
 class HwInfoView extends React.Component {
     constructor(props) {
@@ -54,20 +12,29 @@ class HwInfoView extends React.Component {
             // hwTitle: undefined,
             // hwId: undefined,
  
-
             hwTitle: "作业0",
             hwId: this.props.hwid,
             submitHwList:[],
             userList:[],
         }
-
-        console.log("hwinfo"+this.props.hwid);
     }
 
-
     componentDidMount() {
-        //this.setState({hwTitle: this.props.location.params.hwTitle});
-        //this.setState({hwId: this.props.location.params.hwId});
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'courseCenter/fetchHwInfo',
+            payload: {
+                hwid: this.props.hwid,
+            },
+        });
+
+        dispatch({
+            type: 'manageCourseCenter/fetchSubmission',
+            payload: {
+                hwid: this.props.hwid,
+            },
+        });
+
         let list = [];
         for (let i = 0; i < 47; ++i) {
             list.push({
@@ -97,169 +64,153 @@ class HwInfoView extends React.Component {
         console.log(record);
     }
 
-    changeTab(key) {
-        console.log(key);
+    goToHwCheckPage(hwid){
+        console.log("goto check:"+hwid);
+        this.props.parent.changeView('hwcheck');
     }
 
-    goToHwCheckPage(record){
-        console.log(record);
-        this.props.history.push('/home/course/hw/check');
+    string2html(htmlString) {
+        var html = { __html: htmlString };
+        return <div dangerouslySetInnerHTML={html}></div>;
     }
 
     render() {
         const paginationProps = {
-            position: ['bottomCenter'],
-            showSizeChanger: true,//设置每页显示数据条数
-            showQuickJumper: true
+            position: ['bottomLeft'],
+            showSizeChanger: false,//设置每页显示数据条数
+            showQuickJumper: true,
+            pageSize:7,
         };
 
         const hwColumns = [
             {
                 title: <b>提交者姓名</b>,
-                dataIndex: 'user',
-                key: 'user',
-                width: "40%",
+                dataIndex: 'username',
             },
             {
-                title: <b>提交时间</b>,
-                dataIndex: 'time',
-                key: 'time',
-                width: "20%",
+                title: <b>完成情况</b>,
+                dataIndex: 'state',
+                render: (text) => {
+                    if(text==0)return "未完成";
+                    else if(text==1)return "按时提交";
+                    else if(text==2)return "迟交";
+                }
+
             },
             {
-                title: <b>是否迟交</b>,
-                dataIndex: 'late',
-                key: 'late',
-            },
-            {
-                title: <b>评分</b>,
-                dataIndex: 'score',
-                key: 'score',
+                title: <b>批改情况</b>,
+                dataIndex: 'hasCorrected',
+                render: (text) => {
+                    if (text == true) return "已批改";
+                    else return "未批改";
+                }
             },
             {
                 title: <b>操作</b>,
                 dataIndex: 'operation',
-                render: (text, record) =>(
-                    <Button onClick={()=>this.goToHwCheckPage(record)}>进入批改</Button>
-                )
+                render: (text, record) => {
+                    if (record.hasCorrected) return <div>无需操作</div>;
+                    else return <Button onClick={() => { this.goToHwCheckPage(record.id) }}>进入批改</Button>
+                }
 
             },
         ];
 
         const userColumns = [
             {
+                title: <b></b>,
+                dataIndex: 'avatar',
+                width: "10%",
+                render:(text)=>{
+                    return <Avatar src={text}/>
+                }
+            },
+            {
                 title: <b>姓名</b>,
-                dataIndex: 'user',
-                key: 'user',
-                width: "40%",
+                dataIndex: 'username',
             },
             {
-                title: <b>ID</b>,
-                dataIndex: 'id',
-                key: 'id',
-                width: "20%",
-            },
-            {
-                title: <b>班级</b>,
-                dataIndex: 'class',
-                key: 'class',
+                title: <b>学号</b>,
+                dataIndex: 'userid',
             },
             {
                 title: <b>身份</b>,
-                dataIndex: 'role',
-                key: 'role',
+                dataIndex: 'identity',
+
             },
         ];
 
-        function showhtml(htmlString){
-            var html = {__html:htmlString};
-            return   <div dangerouslySetInnerHTML={html}></div> ;
+        const { hwInfo, submission } = this.props;
+
+        if (JSON.stringify(hwInfo) == "{}" || JSON.stringify(submission) == "{}"
+            || !Array.isArray(submission.hwDetialList) || !Array.isArray(submission.notSubmitUserList)) {
+            return "";
         }
 
         return (
             <div>
+               <Divider />
+                <div style={{ fontSize: 16, paddingBottom: 30 }}>
+                    <div className={"hw-title"} style={{ float: "left" }}>{hwInfo.title}</div>
+                </div>
                 <Divider />
-                <Card title={<div className={"hw-title"} style={{ float: "left" }}>{this.state.hwTitle}</div>}
-                    extra={<Button type={"primary"} style={{ float: "right" }}>提交作业</Button>} bordered={false} />
+                <div style={{ fontSize: 16, paddingBottom: 20 }}>
+                    <div style={{ float: "left" }}><b>截止时间：</b>{hwInfo.deadline}之前</div>
+                    <div style={{ float: "right" }}><b>提交：</b>一份上传文件</div>
+                </div>
                 <Divider />
-                <Space align="center">
-                    <div><b>截止时间：</b>10月31日 23:59 之前</div>
-                    &nbsp; &nbsp;
-                    <div><b>评分：</b>--/10</div>
-                    &nbsp; &nbsp;
-                    <div><b>提交及形式：</b>一份上传文件：图片形式</div>
-                </Space>
-                <Divider/>
-                {showhtml("<p>你好，<strong>世界!3123</strong></p><p></p>")}
-
-                
-                <p>此处为作业0内容</p>
-                <p>此处为作业0内容</p>
-                <p>此处为作业0内容</p>
-                <p>此处为作业0内容</p>
-                <Divider/>
-                <Upload {...props}>
-                    <Button icon={<UploadOutlined/>}>点击上传</Button>
-                </Upload>
-
-                <Divider/>
-                <div className={"hw-title"}>批改结果及参考答案(批改完,下面的内容才显示)</div>
-                <Divider/>
-                <div className={"hw-title1"}>评分</div>
-                <Divider/>
-                <p>此处为评分</p>
-                <div className={"hw-title1"}>批注</div>
-                <Divider/>
-                <p>此处为批注</p>
-                <div className={"hw-title1"}>留言</div>
-                <Divider/>
-                <p>此处为留言</p>
+                <div className={"hw-title1"}>作业要求</div>
+                <Divider />
+                <p>{this.string2html(hwInfo.requirement)}</p>
+                <Divider />
                 <div className={"hw-title1"}>参考答案</div>
-                <Divider/>
-                <p>此处为参考答案</p>
-                <p>此处为参考答案</p>
-                <p>此处为参考答案</p>
-                <p>此处为参考答案</p>
-
-                <Divider/>
-                <div className={"hw-title"}>提交作业情况(只对教师显示)</div>
+                <Divider />
+                <p>{this.string2html(hwInfo.answer)}</p>
+                <Divider />
+                <div className={"hw-title1"}>提交作业情况</div>
                 <Divider/>
                 <Space size={"large"}>
                     <Card title={"批改进度"}>
-                        <Progress type="circle" percent={100} />
+                        <Progress type="circle" percent={submission.percentCorrection} />
                     </Card>
                     <Card title={"提交情况"}>
-                        <Progress type="circle" percent={60} />
+                        <Progress type="circle" percent={submission.percentSubmission} />
                     </Card>
                 </Space>
-
-                <Tabs defaultActiveKey="1" onChange={this.changeTab}>
+                <Divider/>
+                <Tabs defaultActiveKey="1">
                     <TabPane tab="提交作业列表" key="1">
-                        <Table history={this.props.history}
-                               columns={hwColumns}
-                               dataSource={this.state.submitHwList}
-                               bordered
-                               pagination={paginationProps}
-                               footer={() => {
-                                   return <div>共<b>{this.state.submitHwList.length}</b>条记录</div>
-                               }}/>
+                        <Table 
+                            columns={hwColumns}
+                            dataSource={submission.hwDetialList}
+                            bordered
+                            pagination={paginationProps}
+                            footer={() => {
+                                return <div>共<b>{submission.hwDetialList.length}</b>条记录</div>
+                            }}
+                            rowClassName={(record, index) => {
+                                let className = 'light-row';
+                                if (index % 2 === 1) className = 'dark-row';
+                                return className;
+                            }}
+                        />
                     </TabPane>
                     <TabPane tab="未提交用户列表" key="2">
-                        <Table history={this.props.history}
-                               columns={userColumns}
-                               dataSource={this.state.userList}
-                               bordered
-                               onRow={record => {
-                                   return {
-                                       onClick: event => {
-                                           this.onClicked(record);
-                                       }, // 点击行
-                                   };
-                               }}
-                               pagination={paginationProps}
-                               footer={() => {
-                                   return <div>共<b>{this.state.userList.length}</b>条记录</div>
-                               }}/>
+                        <Table 
+                            columns={userColumns}
+                            dataSource={submission.notSubmitUserList}
+                            onRow={record => {
+                                return {
+                                    onClick: event => {
+                                        this.onClicked(record);
+                                    }, // 点击行
+                                };
+                            }}
+                            pagination={paginationProps}
+                            footer={() => {
+                                return <div>共<b>{submission.notSubmitUserList.length}</b>条记录</div>
+                            }}
+                        />
                     </TabPane>
 
                 </Tabs>
@@ -270,4 +221,7 @@ class HwInfoView extends React.Component {
     }
 }
 
-export default HwInfoView;
+export default connect(({ courseCenter, manageCourseCenter }) => ({
+    hwInfo: courseCenter.hwInfo,
+    submission: manageCourseCenter.submission,
+}))(HwInfoView);

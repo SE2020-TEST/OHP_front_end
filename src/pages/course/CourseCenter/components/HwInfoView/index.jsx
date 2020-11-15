@@ -70,39 +70,46 @@ class HwInfoView extends React.Component {
                     <div style={{ float: "right" }}><b>提交：</b>一份上传文件</div>
                 </div>
                 <Divider />
-                <div className={"hw-title1"}>作业内容</div>
+                <div className={"hw-title1"}>作业要求</div>
                 <Divider />
-                <p>{this.string2html(hwInfo.content)}</p>
+                <p>{this.string2html(hwInfo.requirement)}</p>
                 <Divider />
-                <div id="submit-hw">
-                    <Form
-                        layout="vertical"
-                        onFinish={this.handleSubmit}
-                        hideRequiredMark
-                    >
-                        <Form.Item
-                            name="commit"
-                            rules={[
-                                {
-                                    validator: this.validatorCommit,
-                                },
-                            ]}>
-                            <Card className="editor-wrapper">
-                                <BraftEditor
-                                    value={editorCommit}
-                                    onChange={(editorCommit) => {
-                                        this.setState({
-                                            editorCommit: editorCommit,
-                                            HTMLCommit: editorCommit.toHTML()
-                                        })
-                                    }} />
-                            </Card>
-                        </Form.Item>
-                        <Form.Item>
-                            <Button htmlType="submit" type="primary">提交作业</Button>
-                        </Form.Item>
-                    </Form>
-                </div>
+                {hwInfo.state == 0 ?      
+                    <div id="submit-hw">
+                        <Form
+                            layout="vertical"
+                            onFinish={this.handleSubmit}
+                            hideRequiredMark
+                        >
+                            <Form.Item
+                                name="commit"
+                                rules={[
+                                    {
+                                        validator: this.validatorCommit,
+                                    },
+                                ]}>
+                                <Card className="editor-wrapper">
+                                    <BraftEditor
+                                        value={editorCommit}
+                                        onChange={(editorCommit) => {
+                                            this.setState({
+                                                editorCommit: editorCommit,
+                                                HTMLCommit: editorCommit.toHTML()
+                                            })
+                                        }} />
+                                </Card>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button htmlType="submit" type="primary">提交作业</Button>
+                            </Form.Item>
+                        </Form>
+                    </div>
+                    :
+                    <div>
+
+                    </div>
+                }
+
                 <Divider />
                 {hwInfo.hasCorrected ?
                     <div>

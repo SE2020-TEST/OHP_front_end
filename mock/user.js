@@ -2,6 +2,11 @@ function getFakeCaptcha(req, res) {
   return res.json('captcha-xxx');
 } // 代码中会兼容本地 service mock 以及部署站点的静态数据
 
+const usernames=[
+  '刘一','陈二','张三','李四','王五','赵六','孙七','周八','吴九','郑十',
+];
+
+
 export default {
   // 支持值为 Object 和 Array
   'GET  /api/user': {

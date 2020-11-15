@@ -40,7 +40,7 @@ class CourseInfoView extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'manageCourseCenter/fetchCourseInfo',
+      type: 'courseCenter/fetchCourseInfo',
       payload: {
         sid: 4
       },
@@ -190,6 +190,6 @@ class CourseInfoView extends Component {
   }
 }
 
-export default connect(({ manageCourseCenter }) => ({
-  courseInfo: manageCourseCenter.courseInfo,
+export default connect(({ courseCenter }) => ({
+  courseInfo: courseCenter.courseInfo,
 }))(CourseInfoView);
