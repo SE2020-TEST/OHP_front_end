@@ -25,7 +25,7 @@ export default class LoginPage extends React.Component {
 
     Login() {
         if (this.state.ID.length > 0 && this.state.PW.length > 0) {
-            logIn(this.state.ID, this.state.PW, this.props.history);
+            logIn(this.state.ID, this.state.PW,this.state.value, this.props.history);
             // if(this.state.ID==="123")
             // {
             //     this.props.history.push("/home");

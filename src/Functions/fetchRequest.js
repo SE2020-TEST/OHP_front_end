@@ -23,10 +23,11 @@ let postFetch = (url, body, callback) => {
     fetch(completeURL, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            // 'Access-Control-Allow-Origin': '*'
         },
         body: JSON.stringify(body),
-        credentials: 'include'
+        // credentials: 'include'
     }).then(rsp => rsp.json().then(rsp => {
         handleRtn(rsp, callback);
     }))

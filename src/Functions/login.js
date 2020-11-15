@@ -7,11 +7,13 @@ export function logIn(uid,password,role,history){
         role:role,
     },(rsp)=>{
         let user = rsp;
-        sessionStorage.setItem("userId", user.id);//——返回的是用户的所有数据
-        sessionStorage.setItem("userName", user.username);
-        sessionStorage.setItem("userIcon", user.icon);
-        sessionStorage.setItem("userRoot", user.root);//这些返回值就看有没有了，然后是全部存在session storage里面
-        sessionStorage.setItem("userState", user.state);
+        sessionStorage.setItem("userId", user.userId);//——返回的是用户的所有数据
+        sessionStorage.setItem("role", user.role);
+        sessionStorage.setItem("roleId", user.id);
+        sessionStorage.setItem("userName", user.name);
+        sessionStorage.setItem("Email", user.email);
+        sessionStorage.setItem("userAvatar", user.avatar);
+        sessionStorage.setItem("userPhone", user.phone);
         history.push("/home");//完成之后的跳转
     });
 }
