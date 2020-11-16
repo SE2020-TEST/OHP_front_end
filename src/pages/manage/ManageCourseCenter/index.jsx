@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'umi';
 import { GridContent,PageContainer } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import CourseInfoView from './components/CouseInfoView';
@@ -7,6 +6,7 @@ import HwListView from './components/HwListView';
 import HwInfoView from './components/HwInfoView';
 import HwCreateView from './components/HwCreateView';
 import HwCheckView from './components/HwCheckView';
+import UserListView from './components/UserListView';
 import styles from './style.less';
 const { Item } = Menu;
 
@@ -48,6 +48,7 @@ class ManageCourseCenter extends Component {
     const menuMap = {
       courseinfo: '课程详情',
       hwlist: '作业列表',
+      userlist: '学生列表',
     };
     return Object.keys(menuMap).map((item) => <Item key={item}>{menuMap[item]}</Item>);
   };
@@ -106,7 +107,7 @@ class ManageCourseCenter extends Component {
         return <HwCheckView hwid={this.state.hwid}/>;
         
       case 'userlist':
-        return <CourseInfoView/>;
+        return <UserListView sid={this.state.sid}/>;
 
       default:
         break;

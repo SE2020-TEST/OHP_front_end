@@ -1,7 +1,7 @@
 import React from "react";
-import { Card, List, Avatar, Space,Button } from "antd";
+import { Card, List, Avatar, Space, Button } from "antd";
 import { connect } from 'umi';
-import {EditOutlined} from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import logo from './logo.svg';
 
 class HwListView extends React.Component {

@@ -20,11 +20,11 @@ class HwCreateView extends Component {
     handleSubmit = (value) => {
         //这里更新课程信息
         value.deadline = value.deadline.format('YYYY-MM-DD HH:mm:ss');
-        value.content = this.state.HTMLContent;
+        value.requirement = this.state.HTMLContent;
         value.answer = this.state.HTMLAnswer;
 
         console.log(value)
-        message.success("更新课程信息成功");
+        message.success("新建课程信息成功");
     };
 
 
@@ -77,7 +77,7 @@ class HwCreateView extends Component {
                     </Form.Item>
                     <Form.Item
                         name="content"
-                        label={"作业内容"}
+                        label={"作业要求"}
                         rules={[
                             {
                                 validator: this.validatorContent,

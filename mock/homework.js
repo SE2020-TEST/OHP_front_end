@@ -51,7 +51,7 @@ for (let i = 0; i < 158; ++i) {
             content: contents[i % contents.length],//作业内容(html代码)
             answer: answers[i % answers.length],//参考答案(html代码)
             state: states[i % states.length],//完成情况
-            hasCorrected: i % 7 == 0 ? true : false,//是否被批改
+            hasCorrected: states[i % states.length] == 0 ? false : (i % 7 == 0 ? true : false),//是否被批改
             submitTime: submitTimes[i % submitTimes.length],//提交时间
             score: scores[i % scores.length],//评分
             comment: `批注${i}`,//批注
@@ -60,9 +60,9 @@ for (let i = 0; i < 158; ++i) {
     )
 }
 
-let notSubmitUserList = [];
+let userList = [];
 for (let i = 0; i < 40; ++i) {
-    notSubmitUserList.push({
+    userList.push({
         username: usernames[i % usernames.length],
         avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
         userid: `5180219100${i}`,
@@ -90,14 +90,22 @@ export default {
 
     'POST /hw/submission': (req, res) => {
         const { hwid } = req.query;
-        console.log("submission:"+hwid);
+        //console.log("submission:"+hwid);
 
         let hwDetialList=hwList.filter((item)=>{return item.state!=0});
         res.send({
             percentCorrection: 46,//批改百分比
             percentSubmission: 77,//提交百分比
             hwDetialList: hwDetialList,//提交的作业列表
-            notSubmitUserList: notSubmitUserList,//未提交的用户列表
+            notSubmitUserList: userList,//未提交的用户列表
         })
+    },
+
+    'POST /hw/users': (req, res) => {
+        const { sid } = req.query;
+
+        console.log("sid:"+sid)
+        
+        return res.json(userList.slice(0,27));
     },
 };

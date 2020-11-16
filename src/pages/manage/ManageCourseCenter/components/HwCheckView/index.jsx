@@ -66,7 +66,11 @@ class HwCheckView extends Component {
                 <div style={{ fontSize: 16, paddingBottom: 20 }}>
                     <div style={{ float: "left" }}><b>截止时间：</b>{hwInfo.deadline}之前</div>
                     <div style={{ float: "right" }}><b>提交：</b>一份上传文件</div>
-                </div>
+                </div> 
+                <Divider />
+                <div className={"hw-title1"}>作业要求</div>
+                <Divider />
+                <p>{this.string2html(hwInfo.requirement)}</p>
                 <Divider />
                 <div className={"hw-title1"}>作业内容</div>
                 <Divider />

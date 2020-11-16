@@ -3,19 +3,17 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Alert, Typography } from 'antd';
 import styles from './Welcome.less';
 
-const CodePreview = ({ children }) => (
-  <pre className={styles.pre}>
-    <code>
-      <Typography.Text copyable>{children}</Typography.Text>
-    </code>
-  </pre>
+const TextPreview = ({ children }) => (
+  <div className={styles.pre}>
+    <Typography.Text>{children}</Typography.Text>
+  </div>
 );
 
 export default () => (
   <PageContainer>
     <Card>
       <Alert
-        message="更快更强的重型组件，已经发布。"
+        message="UI升级的云作业平台2.0"
         type="success"
         showIcon
         banner
@@ -25,24 +23,9 @@ export default () => (
         }}
       />
       <Typography.Text strong>
-        高级表格{' '}
-        <a href="https://protable.ant.design/" rel="noopener noreferrer" target="__blank">
-          欢迎使用
-        </a>
+        欢迎使用云作业平台
       </Typography.Text>
-      <CodePreview>yarn add @ant-design/pro-table</CodePreview>
-      <Typography.Text
-        strong
-        style={{
-          marginBottom: 12,
-        }}
-      >
-        高级布局{' '}
-        <a href="https://prolayout.ant.design/" rel="noopener noreferrer" target="__blank">
-          欢迎使用
-        </a>
-      </Typography.Text>
-      <CodePreview>yarn add @ant-design/pro-layout</CodePreview>
+      <TextPreview>云作业平台是为师生开展网络辅助教学服务的支撑平台。教师可布置作业、查看学生完成情况；学生可完成作业、查看成绩和教师评价。</TextPreview>
     </Card>
   </PageContainer>
 );

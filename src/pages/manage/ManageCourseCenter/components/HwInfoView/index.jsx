@@ -201,9 +201,7 @@ class HwInfoView extends React.Component {
                             dataSource={submission.notSubmitUserList}
                             onRow={record => {
                                 return {
-                                    onClick: event => {
-                                        this.onClicked(record);
-                                    }, // 点击行
+                                    onClick: () => {this.onClicked(record);}, // 点击行
                                 };
                             }}
                             pagination={paginationProps}

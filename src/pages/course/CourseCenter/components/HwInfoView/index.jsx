@@ -2,6 +2,7 @@ import React from "react";
 import { Divider, Button, Card, Form } from "antd";
 import BraftEditor from 'braft-editor'
 import { connect } from 'umi';
+import { CheckOutlined } from '@ant-design/icons';
 import './BraftEditor.css';
 import './index.css'
 
@@ -59,9 +60,15 @@ class HwInfoView extends React.Component {
                 <div style={{ fontSize: 16, paddingBottom: 30 }}>
                     <div className={"hw-title"} style={{ float: "left" }}>{hwInfo.title}</div>
                     <div style={{ float: "right" }}>
-                        <Button type={"primary"} style={{ float: "right" }} onClick={() => this.scrollToAnchor('submit-hw')}>
-                            提交作业
+                        {hwInfo.state == 0 ?
+                            <Button type={"primary"} style={{ float: "right" }} onClick={() => this.scrollToAnchor('submit-hw')}>
+                                提交作业
                             </Button>
+                            :
+                            <Button type={"primary"} icon={<CheckOutlined />} style={{ float: "right" }}
+                                onClick={() => this.scrollToAnchor('hw-content')}>
+                                已提交
+                            </Button>}
                     </div>
                 </div>
                 <Divider />
@@ -74,7 +81,9 @@ class HwInfoView extends React.Component {
                 <Divider />
                 <p>{this.string2html(hwInfo.requirement)}</p>
                 <Divider />
-                {hwInfo.state == 0 ?      
+                <div className={"hw-title1"}>作业内容</div>
+                <Divider />
+                {hwInfo.state == 0 ?
                     <div id="submit-hw">
                         <Form
                             layout="vertical"
@@ -105,8 +114,8 @@ class HwInfoView extends React.Component {
                         </Form>
                     </div>
                     :
-                    <div>
-
+                    <div id="hw-content">
+                        <p>{this.string2html(hwInfo.content)}</p>
                     </div>
                 }
 
