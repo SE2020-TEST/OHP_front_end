@@ -1,10 +1,9 @@
-import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
-import { Alert, Checkbox } from 'antd';
+import { Alert } from 'antd';
 import React, { useState } from 'react';
 import { Link, connect } from 'umi';
 import LoginForm from './components/Login';
 import styles from './style.less';
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginForm;
+const { Tab, UserName, Password, Submit } = LoginForm;
 
 const LoginMessage = ({ content }) => (
   <Alert
@@ -19,39 +18,50 @@ const LoginMessage = ({ content }) => (
 
 const Login = (props) => {
   const { userLogin = {}, submitting } = props;
-  const { status, type: loginType } = userLogin;
-  const [autoLogin, setAutoLogin] = useState(true);
-  const [type, setType] = useState('account');
+  const { status } = userLogin;
+  const [type, setType] = useState('student');
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values) => {  
     const { dispatch } = props;
+    
+    let payload = {};
+    payload.role = type;
+    if (type == "student") {
+      payload.uid = values.userid;
+      payload.password = values.password;
+    } else {
+      payload.uid = values.userid_2;
+      payload.password = values.password_2;
+    }
     dispatch({
       type: 'login/login',
-      payload: { ...values, type },
+      payload: { ...payload },
     });
   };
 
+  console.log("status:"+status)
+  console.log("submitting:"+submitting)
+  
   return (
     <div className={styles.main}>
       <LoginForm activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
-        <Tab key="account" tab="账户密码登录">
-          {status === 'error' && loginType === 'account' && !submitting && (
+        <Tab key="student" tab="学生登录">
+          {status === 'error' && !submitting && (
             <LoginMessage content="账户或密码错误（admin/ant.design）" />
           )}
-
           <UserName
-            name="userName"
-            placeholder="用户名: admin or user"
+            name="userid"
+            placeholder="学号"
             rules={[
               {
                 required: true,
-                message: '请输入用户名!',
+                message: '请输入学号!',
               },
             ]}
           />
           <Password
             name="password"
-            placeholder="密码: ant.design"
+            placeholder="密码"
             rules={[
               {
                 required: true,
@@ -60,42 +70,35 @@ const Login = (props) => {
             ]}
           />
         </Tab>
-        <Tab key="mobile" tab="手机号登录">
-          {status === 'error' && loginType === 'mobile' && !submitting && (
-            <LoginMessage content="验证码错误" />
+        <Tab key="teacher" tab="教师登录">
+        {status === 'error' && !submitting && (
+            <LoginMessage content="账户或密码错误（admin/ant.design）" />
           )}
-          <Mobile
-            name="mobile"
-            placeholder="手机号"
+          <UserName
+            name="userid_2"
+            placeholder="工号"
             rules={[
               {
                 required: true,
-                message: '请输入手机号！',
-              },
-              {
-                pattern: /^1\d{10}$/,
-                message: '手机号格式错误！',
+                message: '请输入工号!',
               },
             ]}
           />
-          <Captcha
-            name="captcha"
-            placeholder="验证码"
-            countDown={120}
-            getCaptchaButtonText=""
-            getCaptchaSecondText="秒"
+          <Password
+            name="password_2"
+            placeholder="密码"
             rules={[
               {
                 required: true,
-                message: '请输入验证码！',
+                message: '请输入密码！',
               },
             ]}
           />
         </Tab>
         <div>
-          <Checkbox checked={autoLogin} onChange={(e) => setAutoLogin(e.target.checked)}>
-            自动登录
-          </Checkbox>
+          <Link to="/user/register">
+            注册账户
+          </Link>
           <a
             style={{
               float: 'right',
@@ -105,15 +108,6 @@ const Login = (props) => {
           </a>
         </div>
         <Submit loading={submitting}>登录</Submit>
-        <div className={styles.other}>
-          其他登录方式
-          <AlipayCircleOutlined className={styles.icon} />
-          <TaobaoCircleOutlined className={styles.icon} />
-          <WeiboCircleOutlined className={styles.icon} />
-          <Link className={styles.register} to="/user/register">
-            注册账户
-          </Link>
-        </div>
       </LoginForm>
     </div>
   );

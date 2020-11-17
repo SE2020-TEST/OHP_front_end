@@ -3,6 +3,8 @@ import { history } from 'umi';
 import { fakeAccountLogin } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
+
+
 const Model = {
   namespace: 'login',
   state: {
@@ -16,7 +18,8 @@ const Model = {
         payload: response,
       }); // Login successfully
 
-      if (response.status === 'ok') {
+     // if (response.status === 'ok') {
+      if (response.code == 0) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -55,8 +58,9 @@ const Model = {
   },
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, type: payload.type };
+      console.log(payload)
+      setAuthority(payload.data.role=='student'?'user':'admin');
+      return { ...state, status: payload.code == 0 ? 'ok' : 'error', type: payload.type };
     },
   },
 };

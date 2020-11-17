@@ -97,7 +97,7 @@ class BaseView extends Component {
               } />
             </Form.Item>
             <Form.Item
-              name="identity"
+              name="role"
               label={formatMessage({
                 id: 'accountsettings.basic.identity',
               })}

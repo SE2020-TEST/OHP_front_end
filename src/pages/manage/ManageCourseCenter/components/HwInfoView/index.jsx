@@ -135,7 +135,7 @@ class HwInfoView extends React.Component {
             },
             {
                 title: <b>身份</b>,
-                dataIndex: 'identity',
+                dataIndex: 'role',
 
             },
         ];

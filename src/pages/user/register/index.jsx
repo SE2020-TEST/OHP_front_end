@@ -8,17 +8,17 @@ const InputGroup = Input.Group;
 const passwordStatusMap = {
   ok: (
     <div className={styles.success}>
-      <FormattedMessage id="userandregister.strength.strong" />
+      强度：强
     </div>
   ),
   pass: (
     <div className={styles.warning}>
-      <FormattedMessage id="userandregister.strength.medium" />
+      强度：中
     </div>
   ),
   poor: (
     <div className={styles.error}>
-      <FormattedMessage id="userandregister.strength.short" />
+      强度：太短
     </div>
   ),
 };
@@ -99,9 +99,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
 
     if (value && value !== form.getFieldValue('password')) {
       return promise.reject(
-        formatMessage({
-          id: 'userandregister.password.twice',
-        }),
+        '两次输入的密码不匹配!',
       );
     }
 
@@ -114,9 +112,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
     if (!value) {
       setvisible(!!value);
       return promise.reject(
-        formatMessage({
-          id: 'userandregister.password.required',
-        }),
+        '请输入密码！',
       );
     } // 有值的情况
 
@@ -160,31 +156,60 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
   return (
     <div className={styles.main}>
       <h3>
-        <FormattedMessage id="userandregister.register.register" />
+        注册
       </h3>
       <Form form={form} name="UserRegister" onFinish={onFinish}>
+        <FormItem name="role">
+          <Select defaultValue="student">
+            <Option value="student">学生</Option>
+            <Option value="teacher">教师</Option>
+          </Select>
+        </FormItem>
         <FormItem
-          name="mail"
+          name="uid"
           rules={[
             {
               required: true,
-              message: formatMessage({
-                id: 'userandregister.email.required',
-              }),
-            },
-            {
-              type: 'email',
-              message: formatMessage({
-                id: 'userandregister.email.wrong-format',
-              }),
+              pattern: new RegExp(/^[1-9]\d*$/, "g"),
+              message: '学号/工号的格式为纯数字！',
             },
           ]}
         >
           <Input
             size="large"
-            placeholder={formatMessage({
-              id: 'userandregister.email.placeholder',
-            })}
+            placeholder='学号/工号'
+          />
+        </FormItem>
+        <FormItem
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: '请输入姓名！',
+            },
+          ]}
+        >
+          <Input
+            size="large"
+            placeholder='姓名'
+          />
+        </FormItem>
+        <FormItem
+          name="mail"
+          rules={[
+            {
+              required: true,
+              message: '请输入邮箱地址！',
+            },
+            {
+              type: 'email',
+              message: '邮箱地址格式错误！',
+            },
+          ]}
+        >
+          <Input
+            size="large"
+            placeholder='邮箱'
           />
         </FormItem>
         <Popover
@@ -209,7 +234,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
                     marginTop: 10,
                   }}
                 >
-                  <FormattedMessage id="userandregister.strength.msg" />
+                  请至少输入 6 个字符。请不要使用容易被猜到的密码。
                 </div>
               </div>
             )
@@ -236,9 +261,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             <Input
               size="large"
               type="password"
-              placeholder={formatMessage({
-                id: 'userandregister.password.placeholder',
-              })}
+              placeholder='至少6位密码，区分大小写'
             />
           </FormItem>
         </Popover>
@@ -247,9 +270,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
           rules={[
             {
               required: true,
-              message: formatMessage({
-                id: 'userandregister.confirm-password.required',
-              }),
+              message: '请确认密码！',
             },
             {
               validator: checkConfirm,
@@ -259,9 +280,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
           <Input
             size="large"
             type="password"
-            placeholder={formatMessage({
-              id: 'userandregister.confirm-password.placeholder',
-            })}
+            placeholder= '确认密码'
           />
         </FormItem>
         <InputGroup compact>
@@ -274,7 +293,6 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             }}
           >
             <Option value="86">+86</Option>
-            <Option value="87">+87</Option>
           </Select>
           <FormItem
             style={{
@@ -284,23 +302,17 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             rules={[
               {
                 required: true,
-                message: formatMessage({
-                  id: 'userandregister.phone-number.required',
-                }),
+                message: '请输入手机号！',
               },
               {
                 pattern: /^\d{11}$/,
-                message: formatMessage({
-                  id: 'userandregister.phone-number.wrong-format',
-                }),
+                message: '手机号格式错误！',
               },
             ]}
           >
             <Input
               size="large"
-              placeholder={formatMessage({
-                id: 'userandregister.phone-number.placeholder',
-              })}
+              placeholder='手机号'
             />
           </FormItem>
         </InputGroup>
@@ -311,17 +323,13 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
               rules={[
                 {
                   required: true,
-                  message: formatMessage({
-                    id: 'userandregister.verification-code.required',
-                  }),
+                  message:'请输入验证码！',
                 },
               ]}
             >
               <Input
                 size="large"
-                placeholder={formatMessage({
-                  id: 'userandregister.verification-code.placeholder',
-                })}
+                placeholder='验证码'
               />
             </FormItem>
           </Col>
@@ -334,9 +342,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             >
               {count
                 ? `${count} s`
-                : formatMessage({
-                    id: 'userandregister.register.get-verification-code',
-                  })}
+                : '获取验证码'}
             </Button>
           </Col>
         </Row>
@@ -348,10 +354,10 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             type="primary"
             htmlType="submit"
           >
-            <FormattedMessage id="userandregister.register.register" />
+            注册
           </Button>
           <Link className={styles.login} to="/user/login">
-            <FormattedMessage id="userandregister.register.sign-in" />
+            使用已有账户登录
           </Link>
         </FormItem>
       </Form>

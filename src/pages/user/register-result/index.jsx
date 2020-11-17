@@ -31,9 +31,11 @@ const RegisterResult = ({ location }) => (
         />
       </div>
     }
-    subTitle={formatMessage({
-      id: 'userandregister-result.register-result.activation-email',
-    })}
+    subTitle={
+      <div style={{ color: 'rgb(255, 255, 255)' }}>
+        <FormattedMessage id='userandregister-result.register-result.activation-email' />
+      </div>
+    }
     extra={actions}
   />
 );

@@ -66,6 +66,7 @@ export default defineConfig({
             {
               path: '/',
               component: '../layouts/BasicLayout',
+              Routes: ['src/pages/Authorized'],
               authority: ['admin', 'user'],
               routes: [
                 {
@@ -86,7 +87,7 @@ export default defineConfig({
                   authority: ['admin'],
                   routes: [
                     {
-                      path: '/admin/sub-page',
+                      path: '/manage/sub-page',
                       name: 'sub-page',
                       icon: 'smile',
                       component: './Welcome',

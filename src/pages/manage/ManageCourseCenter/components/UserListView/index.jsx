@@ -58,7 +58,7 @@ class UserListView extends React.Component {
             },
             {
                 title: <b>身份</b>,
-                dataIndex: 'identity',
+                dataIndex: 'role',
             },
             {
                 title: <b>操作</b>,

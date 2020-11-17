@@ -68,7 +68,7 @@ for (let i = 0; i < 40; ++i) {
         userid: `5180219100${i}`,
         email: 'livingsu@sjtu.edu.cn',
         profile: '你好，云作业平台！',
-        identity: '学生',
+        role: '学生',
         address: '上海市闵行区上海交通大学',
         phone: '12345678',
     })

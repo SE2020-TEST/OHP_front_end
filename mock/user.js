@@ -3,9 +3,22 @@ function getFakeCaptcha(req, res) {
 } // 代码中会兼容本地 service mock 以及部署站点的静态数据
 
 const usernames=[
-  '刘一','陈二','张三','李四','王五','赵六','孙七','周八','吴九','郑十',
+  '张三','李四','王五','赵六','孙七','周八','吴九','郑十',
 ];
 
+let userList = [];
+for (let i = 0; i < 40; ++i) {
+  userList.push({
+    username: usernames[i % usernames.length],
+    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
+    userid: `5180219100${i}`,
+    email: 'livingsu@sjtu.edu.cn',
+    profile: '你好，云作业平台！',
+    role: i % 7 == 0 ? 'teacher' : 'student',
+    address: '上海市闵行区上海交通大学',
+    phone: '12345678',
+  })
+}
 
 export default {
   // 支持值为 Object 和 Array
@@ -15,7 +28,7 @@ export default {
     userid: '00000001',
     email: 'livingsu@sjtu.edu.cn',
     profile: '你好，云作业平台！',
-    identity: '学生',
+    role: '学生',
     notifyCount: 12,
     unreadCount: 11,
     address: '上海市闵行区上海交通大学',
@@ -111,41 +124,62 @@ export default {
       address: 'Sidney No. 1 Lake Park',
     },
   ],
-  'POST /api/login/account': (req, res) => {
-    const { password, userName, type } = req.body;
 
-    if (password === 'ant.design' && userName === 'admin') {
+  'POST /user/login': (req, res) => {
+    const { uid, password, role } = req.body;
+    let user = userList.find(item => { return item.userid == uid });
+
+    console.log(req.body)
+
+    if (user && password == "123" && user.role == role) {
       res.send({
-        status: 'ok',
-        type,
-        currentAuthority: 'admin',
+        code: 0,
+        msg: "",
+        data: user,
+      });
+      return;
+    } else {
+      res.send({
+        code: 1,
+        msg: "",
+        data: {},
       });
       return;
     }
 
-    if (password === 'ant.design' && userName === 'user') {
-      res.send({
-        status: 'ok',
-        type,
-        currentAuthority: 'user',
-      });
-      return;
-    }
+    // const { password, userName, type } = req.body;
+    // if (password === 'ant.design' && userName === 'admin') {
+    //   res.send({
+    //     status: 'ok',
+    //     type,
+    //     currentAuthority: 'admin',
+    //   });
+    //   return;
+    // }
 
-    if (type === 'mobile') {
-      res.send({
-        status: 'ok',
-        type,
-        currentAuthority: 'admin',
-      });
-      return;
-    }
+    // if (password === 'ant.design' && userName === 'user') {
+    //   res.send({
+    //     status: 'ok',
+    //     type,
+    //     currentAuthority: 'user',
+    //   });
+    //   return;
+    // }
 
-    res.send({
-      status: 'error',
-      type,
-      currentAuthority: 'guest',
-    });
+    // if (type === 'mobile') {
+    //   res.send({
+    //     status: 'ok',
+    //     type,
+    //     currentAuthority: 'admin',
+    //   });
+    //   return;
+    // }
+
+    // res.send({
+    //   status: 'error',
+    //   type,
+    //   currentAuthority: 'guest',
+    // });
   },
   'POST /api/register': (req, res) => {
     res.send({
