@@ -115,14 +115,19 @@ export const CourseList = (props) => {
     }
   };
 
-  const extraContent = (
+  const radioContent = (
     <div className={styles.extraContent}>
-      <RadioGroup defaultValue="progress" onChange={radioChange}>
-        <RadioButton value="progress">正在进行</RadioButton>
+      <RadioGroup defaultValue="progressing" onChange={radioChange}>
+        <RadioButton value="progressing">正在进行</RadioButton>
         <RadioButton value="finish">已结束</RadioButton>
         <RadioButton value="all">全部课程</RadioButton>
       </RadioGroup>
-      <Search className={styles.extraContentSearch} placeholder="请输入" onSearch={() => ({})} />
+    </div>
+  );
+
+  const searchContent = (
+    <div>
+      <Search className={styles.extraContentSearch} placeholder="请输入" onSearch={(value) => searchValueChange(value)} />
     </div>
   );
 
@@ -166,6 +171,13 @@ export const CourseList = (props) => {
     setVisible(false);
   };
 
+  const handleDelete = (item) => {
+    console.log("delete")
+    console.log(item)
+
+
+  }
+
   const handleSubmit = (values) => {
     const id = current ? current.id : '';
     setAddBtnblur();
@@ -186,14 +198,14 @@ export const CourseList = (props) => {
           <Card
             className={styles.listCard}
             bordered={false}
-            title="课程列表"
+            title={radioContent}
             style={{
               marginTop: 24,
             }}
             bodyStyle={{
               padding: '0 32px 40px 32px',
             }}
-            extra={extraContent}
+            extra={searchContent}
           >
             <Button
               type="dashed"
@@ -218,13 +230,11 @@ export const CourseList = (props) => {
                 <List.Item
                   actions={[
                     <a
-                      key="edit"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        showEditModal(item);
+                      onClick={() => {
+                        this.handleDelete(item);
                       }}
                     >
-                      编辑
+                      删除
                     </a>,
                     <MoreBtn key="more" item={item} />,
                   ]}

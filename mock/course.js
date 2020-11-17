@@ -82,8 +82,16 @@ for(let i=0;i<8;++i){
 }
 
 export default {
-    'GET  /section/list': (req, res) => {
-        return res.json(sectionList);
+    'POST  /section/list': (req, res) => {
+        const { uid, role, list_type } = req.query;
+
+        let list = sectionList;
+        if (list_type == 0) {
+            list = list.filter((item) => { return item.processing == 1 });
+        } else if (list_type == 1) {
+            list = list.filter((item) => { return item.processing == 0 });
+        }
+        return res.json(list);
     },
 
     'POST /section/info': (req, res) => {

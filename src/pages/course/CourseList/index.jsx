@@ -41,7 +41,9 @@ export const CourseList = (props) => {
     dispatch({
       type: 'courseList/fetch',
       payload: {
-        // count: 5
+        uid:123,
+        role:'student',
+        list_type:0,
       },
     });
   }, [1]);
@@ -49,7 +51,7 @@ export const CourseList = (props) => {
   const [showList, setShowList] = useState([]);
 
   useEffect(() => {
-    setShowList(list.filter((item) => { return item.processing === 1; }));
+    setShowList(list);
   }, [list]);
 
   const paginationProps = {
@@ -83,13 +85,22 @@ export const CourseList = (props) => {
   }
 
   function radioChange(e) {
-    if(e.target.value==="progressing"){
-      setShowList(list.filter((item)=>{return item.processing===1;}));
-    }else if(e.target.value==="finish"){
-      setShowList(list.filter((item)=>{return item.processing===0;}));
-    }else{
-      setShowList(list);
+    let list_type ;
+    if (e.target.value === "progressing") {
+      list_type = 0;
+    } else if (e.target.value === "finish") {
+      list_type = 1;
+    } else {
+      list_type = 2;
     }
+    dispatch({
+      type: 'courseList/fetch',
+      payload: {
+        uid: 123,
+        role: 'student',
+        list_type: list_type,
+      },
+    });
   }
 
   return (

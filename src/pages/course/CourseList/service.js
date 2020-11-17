@@ -1,7 +1,7 @@
 import request from 'umi-request';
 
 export async function queryFakeList(params) {
-  return request('/section/list', {
+  return request.post('/section/list', {
      params,
   });
 }
