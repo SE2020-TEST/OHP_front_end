@@ -27,10 +27,10 @@ class ManageCourseCenter extends Component {
       mode: 'inline',
       titleMap,
       selectKey: 'courseinfo',
-      //sid: this.props.location.state.sid,
-      //title:this.props.location.state.title,
-      sid:2,
-      title:"123",
+      sid: this.props.location.state.sid,
+      title:this.props.location.state.title,
+      // sid:2,
+      // title:"123",
       hwid:undefined,
     };
   }

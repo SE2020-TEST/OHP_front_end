@@ -1,3 +1,5 @@
+import teacherList from './data/teacherList';
+
 const titles = [
     '电路基础',
     '数据结构',
@@ -20,7 +22,7 @@ const avatars = [
     'https://i.loli.net/2020/11/09/XZsqeJdfRAKtuQb.jpg',//数理方法
 ];
 
-const intros = [
+const descriptions = [
     '那是一种内在的东西， 他们到达不了，也无法触及的',
     '希望是一个好东西，也许是最好的，好东西是不会消亡的',
     '生命就像一盒巧克力，结果往往出人意料',
@@ -28,55 +30,41 @@ const intros = [
     '那时候我只会想自己想要什么，从不想自己拥有什么',
 ];
 
-const textbooks=titles;
+const textbooks = titles;
 
-const teachers = [
-    '张峰',
-    '周志华',
-    '邹鹏',
-    '陈昊鹏',
-    '陈雨婷',
-    '冯卫国',
-    '吴爱文',
-    '刘志勇',
-    '杨昌俊',
-    '熊德文',
-];
+let courseList = [];
+for (let i = 0; i < 8; ++i) {
+    courseList.push({
+        courseId: `SE-10${i}`,
+        title: titles[i % titles.length],
+        avatar: avatars[i % avatars.length],
+        description: descriptions[i % descriptions.length],
+        textbook: textbooks[i % textbooks.length],
+    });
+}
 
-const years = [
-    '2017',
-    '2018',
-    '2019',
-    '2020'
-];
 
 const semesters = [
-    '春季',
-    '夏季',
-    '秋季',
+    '2019春季',
+    '2019夏季',
+    '2019秋季',
+    '2020春季',
+    '2020夏季',
+    '2020秋季',
+    '2021春季',
+    '2021夏季',
+    '2021秋季',
 ];
 
-const durations = [
-    '12周',
-    '16周',
-    '18周',
-    '20周',
-];
-
-let sectionList=[];
-for(let i=0;i<8;++i){
+let sectionList = [];
+for (let i = 0; i < 18; ++i) {
     sectionList.push(
         {
             id: `${i}`,
-            title: titles[i % titles.length],
-            avatar: avatars[i % avatars.length],
-            intro: intros[i % intros.length],
-            textbook:textbooks[i%textbooks.length],
-            teacher: teachers[i % teachers.length],
-            year: years[i % years.length],
             semester: semesters[i % semesters.length],
-            duration: durations[i % durations.length],
-            processing: Math.round(Math.random()),
+            processing: Math.round(Math.random()) == 0 ? true : false,
+            course: courseList[i % courseList.length],
+            teacher: teacherList[i % teacherList.length],
         }
     )
 }
@@ -87,16 +75,16 @@ export default {
 
         let list = sectionList;
         if (list_type == 0) {
-            list = list.filter((item) => { return item.processing == 1 });
+            list = list.filter((item) => { return item.processing == true });
         } else if (list_type == 1) {
-            list = list.filter((item) => { return item.processing == 0 });
+            list = list.filter((item) => { return item.processing == false });
         }
         return res.json(list);
     },
 
     'POST /section/info': (req, res) => {
-        const { sid } = req.query;
-        res.send(sectionList.find(item=>{return item.id==sid}));
+        const { sid } = req.query;        
+        res.send(sectionList.find(item => { return item.course.courseId == sid }));
     },
 };
 

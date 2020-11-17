@@ -80,36 +80,69 @@ export default defineConfig({
                   component: './Welcome',
                 },
                 {
+                  path: '/course',
+                  name: '课程',
+                  icon: 'UnorderedListOutlined',
+                  routes: [
+                    {
+                      path: '/course',
+                      redirect: '/course/list',
+                    },
+                    {
+                      name: '课程列表',
+                      icon: 'smile',
+                      path: '/course/list',
+                      component: './course/CourseList',
+                      hideInMenu: true,
+                    },
+                    {
+                      name: '课程中心',
+                      icon: 'smile',
+                      path: '/course/center',
+                      component: './course/CourseCenter',
+                      hideInMenu: true,
+                    },
+                    {
+                      component: './404',
+                    },
+                  ],
+                },
+                {
                   path: '/manage',
-                  name: '管理',
+                  name: '管理课程',
                   icon: 'crown',
                   //component: './Admin',
                   authority: ['admin'],
                   routes: [
                     {
-                      path: '/manage/sub-page',
-                      name: 'sub-page',
-                      icon: 'smile',
-                      component: './Welcome',
-                      authority: ['admin'],
-                    },
-                    {
                       path: '/manage',
-                      redirect: '/manage/courses',
+                      redirect: '/manage/course/list',
                     },
                     {
                       name: '课程列表',
                       icon: 'table',
-                      path: '/manage/courses',
+                      path: '/manage/course/list',
                       component: './manage/ManageCourseList',
+                      hideInMenu: true,
                     },
+                    {
+                      name: '管理课程中心',
+                      icon: 'CalendarOutlined',
+                      path: '/manage/course/center',
+                      component: './manage/ManageCourseCenter',
+                      hideInMenu: true,
+                    },
+                    {
+                      component: './404',
+                    },
+
                   ],
                 },
                 {
-                  name: 'list.table-list',
-                  icon: 'table',
-                  path: '/list',
-                  component: './ListTableList',
+                  name: '日历',
+                  icon: 'CalendarOutlined',
+                  path: '/calendar',
+                  component: './CalendarView',
                 },
                 {
                   path: '/account',
@@ -128,54 +161,10 @@ export default defineConfig({
                       icon: 'smile',
                       component: './account/AccountSettings',
                     },
-                  ],
-                },
-                {
-                  path: '/course',
-                  name: '课程',
-                  icon: 'UnorderedListOutlined',
-                  routes: [
                     {
-                      path: '/course',
-                      redirect: '/course/list',
-                    },
-                    {
-                      name: '列表',
-                      icon: 'smile',
-                      path: '/course/list',
-                      component: './course/CourseList',
-                      hideInMenu: true,
-                    },
-                    {
-                      name: '详情',
-                      icon: 'smile',
-                      path: '/course/info/:id',
-                      component: './course/CourseInfo',
-                      hideInMenu: true,
-                    },
-                    {
-                      name: '课程中心',
-                      icon: 'smile',
-                      path: '/course/center',
-                      component: './course/CourseCenter',
-                      hideInMenu: true,
-                    },
-                    {
-                      // path:,
+                      component: './404',
                     },
                   ],
-                },
-                {
-                  name: '日历',
-                  icon: 'CalendarOutlined',
-                  path: '/calendar',
-                  component: './CalendarView',
-                },
-                {
-                  name: '管理课程中心',
-                  icon: 'CalendarOutlined',
-                  path: '/manageCourseCenter',
-                  component: './manage/ManageCourseCenter',
                 },
                 {
                   component: './404',

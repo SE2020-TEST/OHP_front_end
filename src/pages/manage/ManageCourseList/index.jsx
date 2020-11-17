@@ -4,58 +4,25 @@ import {
   Avatar,
   Button,
   Card,
-  Col,
-  Dropdown,
   Input,
   List,
-  Menu,
   Modal,
-  Progress,
   Radio,
-  Row,
+  Tag,
 } from 'antd';
 import { findDOMNode } from 'react-dom';
 import { PageContainer } from '@ant-design/pro-layout';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import moment from 'moment';
 import OperationModal from './components/OperationModal';
 import styles from './style.less';
+
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const { Search } = Input;
 
-const Info = ({ title, value, bordered }) => (
-  <div className={styles.headerInfo}>
-    <span>{title}</span>
-    <p>{value}</p>
-    {bordered && <em />}
-  </div>
-);
 
-const ListContent = ({ data: { owner, createdAt, percent, status } }) => (
-  <div className={styles.listContent}>
-    <div className={styles.listContentItem}>
-      <span>Owner</span>
-      <p>{owner}</p>
-    </div>
-    <div className={styles.listContentItem}>
-      <span>开始时间</span>
-      <p>{moment(createdAt).format('YYYY-MM-DD HH:mm')}</p>
-    </div>
-    <div className={styles.listContentItem}>
-      <Progress
-        percent={percent}
-        status={status}
-        strokeWidth={6}
-        style={{
-          width: 180,
-        }}
-      />
-    </div>
-  </div>
-);
-
-export const CourseList = (props) => {
+export const ManageCourseList = (props) => {
   const addBtn = useRef(null);
   const {
     loading,
@@ -65,20 +32,25 @@ export const CourseList = (props) => {
   const [done, setDone] = useState(false);
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState(undefined);
-  
-  const [radio, setRadio] = useState("progress");
 
   useEffect(() => {
     dispatch({
-      type: 'manageCourseList/fetch',
+      type: 'courseList/fetch',
       payload: {
-       // count: 5,
+        uid: 123,
+        role: 'student',
+        list_type: 0,
       },
     });
   }, [1]);
 
+  const [showList, setShowList] = useState([]);
+
+  useEffect(() => {
+    setShowList(list);
+  }, [list]);
+
   const paginationProps = {
-    //showSizeChanger: true,
     showQuickJumper: true,
     pageSize: 7,
   };
@@ -102,18 +74,6 @@ export const CourseList = (props) => {
     });
   };
 
-  const editAndDelete = (key, currentItem) => {
-    if (key === 'edit') showEditModal(currentItem);
-    else if (key === 'delete') {
-      Modal.confirm({
-        title: '删除任务',
-        content: '确定删除该任务吗？',
-        okText: '确认',
-        cancelText: '取消',
-        onOk: () => deleteItem(currentItem.id),
-      });
-    }
-  };
 
   const radioContent = (
     <div className={styles.extraContent}>
@@ -131,27 +91,31 @@ export const CourseList = (props) => {
     </div>
   );
 
-  function radioChange(e){
-    console.log(`radio checked:${e.target.value}`);
-    const value=e.target.value;
-    setRadio(value);
-    console.log(`radio read:`+radio);
+  function searchValueChange(value) {
+    setShowList(list.filter((item) => {
+      return item.title.indexOf(value) != -1 || item.intro.indexOf(value) != -1 || item.teacher.indexOf(value) != -1
+        || item.year.indexOf(value) != -1 || item.semester.indexOf(value) != -1 || item.duration.indexOf(value) != -1;
+    }));
   }
 
-  const MoreBtn = ({ item }) => (
-    <Dropdown
-      overlay={
-        <Menu onClick={({ key }) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
-        </Menu>
-      }
-    >
-      <a>
-        更多 <DownOutlined />
-      </a>
-    </Dropdown>
-  );
+  function radioChange(e) {
+    let list_type;
+    if (e.target.value === "progressing") {
+      list_type = 0;
+    } else if (e.target.value === "finish") {
+      list_type = 1;
+    } else {
+      list_type = 2;
+    }
+    dispatch({
+      type: 'courseList/fetch',
+      payload: {
+        uid: 123,
+        role: 'student',
+        list_type: list_type,
+      },
+    });
+  }
 
   const setAddBtnblur = () => {
     if (addBtn.current) {
@@ -225,26 +189,39 @@ export const CourseList = (props) => {
               rowKey="id"
               loading={loading}
               pagination={paginationProps}
-              dataSource={list}
+              dataSource={showList}
               renderItem={(item) => (
                 <List.Item
                   actions={[
                     <a
                       onClick={() => {
-                        this.handleDelete(item);
+                        handleDelete(item)
                       }}
                     >
                       删除
                     </a>,
-                    <MoreBtn key="more" item={item} />,
                   ]}
                 >
                   <List.Item.Meta
-                    avatar={<Avatar src={item.logo} shape="square" size="large" />}
-                    title={<a href={item.href}>{item.title}</a>}
-                    description={item.subDescription}
+                    avatar={<Avatar src={item.course.avatar} shape="square" size="large" />}
+                    title={<a onClick={() => {
+                      history.push({ pathname: '/manage/course/center', state: { sid: item.course.courseId,title: item.course.title } });
+                    }}>{item.course.title}</a>}
+                    description={item.course.description}
                   />
-                  <ListContent data={item} />
+                    <div className={styles.listContent}>
+                  <div className={styles.listContentItem}>
+                      <span>课号</span>
+                      <p>{item.course.courseId}</p>
+                    </div>
+                    <div className={styles.listContentItem}>
+                      <span>任课教师</span>
+                      <p>{item.teacher.name}</p>
+                    </div>
+                    <div className={styles.listContentItem}>
+                      <Tag color="#55acee">{item.semester}学期</Tag>
+                    </div>
+                  </div>
                 </List.Item>
               )}
             />
@@ -266,4 +243,4 @@ export const CourseList = (props) => {
 export default connect(({ courseList, loading }) => ({
   courseList,
   loading: loading.models.courseList,
-}))(CourseList);
+}))(ManageCourseList);

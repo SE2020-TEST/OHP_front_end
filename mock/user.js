@@ -1,27 +1,13 @@
+import studentList from './data/studentList'
+import teacherList from './data/teacherList'
+
 function getFakeCaptcha(req, res) {
   return res.json('captcha-xxx');
 } // 代码中会兼容本地 service mock 以及部署站点的静态数据
 
-const usernames=[
-  '张三','李四','王五','赵六','孙七','周八','吴九','郑十',
-];
 
-let userList = [];
-for (let i = 0; i < 40; ++i) {
-  userList.push({
-    username: usernames[i % usernames.length],
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
-    userid: `5180219100${i}`,
-    email: 'livingsu@sjtu.edu.cn',
-    profile: '你好，云作业平台！',
-    role: i % 7 == 0 ? 'teacher' : 'student',
-    address: '上海市闵行区上海交通大学',
-    phone: '12345678',
-  })
-}
 
 export default {
-  // 支持值为 Object 和 Array
   'GET  /api/user': {
     username: '李华',
     avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
@@ -127,9 +113,19 @@ export default {
 
   'POST /user/login': (req, res) => {
     const { uid, password, role } = req.body;
-    let user = userList.find(item => { return item.userid == uid });
 
-    console.log(req.body)
+    let user;
+    if (role == 0) {
+      user = studentList.find(item => { return item.userId == uid });
+    } else if (role == 1) {
+      user = teacherList.find(item => { return item.userId == uid });
+    } else {
+      res.send({
+        code: 1,
+        msg: "",
+        data: {},
+      });
+    }
 
     if (user && password == "123" && user.role == role) {
       res.send({

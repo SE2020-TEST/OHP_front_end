@@ -1,6 +1,5 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Upload, Form, message,Tooltip  } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { UploadOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Button, Input, Select, Upload, Form, message, Tooltip } from 'antd';
 import { connect, FormattedMessage, formatMessage } from 'umi';
 import React, { Component } from 'react';
 import styles from './index.less';
@@ -30,29 +29,32 @@ const AvatarView = ({ avatar }) => (
 
 
 class CourseInfoView extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
-      courseInfo:this.props.courseInfo,
+    this.state = {
+      sid: this.props.sid,
     }
   }
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'courseCenter/fetchCourseInfo',
-      payload: {
-        sid: 4
-      },
-    })
+
+    if (this.state.sid != undefined) {
+      dispatch({
+        type: 'courseCenter/fetchCourseInfo',
+        payload: {
+          sid: this.state.sid
+        },
+      })
+    }
   }
 
   getAvatarURL() {
     const { courseInfo } = this.props;
 
     if (courseInfo) {
-      if (courseInfo.avatar) {
-        return courseInfo.avatar;
+      if (courseInfo.course.avatar) {
+        return courseInfo.course.avatar;
       }
 
       const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
@@ -72,10 +74,19 @@ class CourseInfoView extends Component {
   render() {
     const { courseInfo } = this.props;
 
-    //先判断是否为空
     if (JSON.stringify(courseInfo) == "{}") {
       return "";
     }
+
+    console.log(courseInfo);
+
+    let info = {};
+    info.title = courseInfo.course.title;
+    info.cid=courseInfo.course.courseId;
+    info.semester = courseInfo.semester;
+    info.description = courseInfo.course.description;
+    info.textbook = courseInfo.course.textbook;
+    
 
     return (
       <div className={styles.baseView}>
@@ -83,7 +94,7 @@ class CourseInfoView extends Component {
           <Form
             layout="vertical"
             onFinish={this.handleSubmit}
-            initialValues={courseInfo}
+            initialValues={info}
             hideRequiredMark
           >
             <Form.Item
@@ -96,24 +107,17 @@ class CourseInfoView extends Component {
                 },
               ]}
             >
-              <Input/>
+              <Input />
             </Form.Item>
             <Form.Item
-              name="year"
-              label={"学年"}
-              rules={[
-                {
-                  required: true,
-                  message: '请输入学年!',
-                },
-              ]}
+              name="cid"
+              label={"课号"}
             >
-              <Select  style={{ width: 120 }}>
-                <Option value="2017">2017</Option>
-                <Option value="2018">2018</Option>
-                <Option value="2019">2019</Option>
-                <Option value="2020">2020</Option>
-              </Select>
+              <Input readOnly suffix={
+                <Tooltip title="课号不可更改">
+                  <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                </Tooltip>
+              } />
             </Form.Item>
             <Form.Item
               name="semester"
@@ -125,31 +129,20 @@ class CourseInfoView extends Component {
                 },
               ]}
             >
-              <Select  style={{ width: 120 }}>
-                <Option value="春季">春季</Option>
-                <Option value="夏季">夏季</Option>
-                <Option value="秋季">秋季</Option>
+              <Select style={{ width: 120 }}>
+                <Option value="2019春季">2019春季</Option>
+                <Option value="2019夏季">2019夏季</Option>
+                <Option value="2019秋季">2019秋季</Option>
+                <Option value="2020春季">2020春季</Option>
+                <Option value="2020夏季">2020夏季</Option>
+                <Option value="2020秋季">2020秋季</Option>
+                <Option value="2021春季">2021春季</Option>
+                <Option value="2021夏季">2021夏季</Option>
+                <Option value="2021秋季">2021秋季</Option>
               </Select>
             </Form.Item>
             <Form.Item
-              name="duration"
-              label={"周数"}
-              rules={[
-                {
-                  required: true,
-                  message: '请输入周数!',
-                },
-              ]}
-            >
-              <Select  style={{ width: 120 }}>
-                <Option value="12周">12周</Option>
-                <Option value="16周">16周</Option>
-                <Option value="18周">18周</Option>
-                <Option value="20周">20周</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="intro"
+              name="description"
               label={"课程简介"}
               rules={[
                 {
@@ -158,7 +151,7 @@ class CourseInfoView extends Component {
                 },
               ]}
             >
-              <Input.TextArea rows={4}/>
+              <Input.TextArea rows={4} />
             </Form.Item>
             <Form.Item
               name="textbook"
@@ -170,7 +163,7 @@ class CourseInfoView extends Component {
                 },
               ]}
             >
-              <Input.TextArea rows={4}/>
+              <Input.TextArea rows={4} />
             </Form.Item>
             <Form.Item>
               <Button htmlType="submit" type="primary">

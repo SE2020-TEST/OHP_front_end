@@ -1,4 +1,4 @@
-import React, {  useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Avatar,
   Card,
@@ -8,27 +8,13 @@ import {
   Tag,
 } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import styles from './style.less';
-import { history } from 'umi';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const { Search } = Input;
 
-const ListContent = ({ data: { teacher, year, semester, duration } }) => (
-  <div className={styles.listContent}>
-    <div className={styles.listContentItem}>
-      <span>任课教师</span>
-      <p>{teacher}</p>
-    </div>
-    <div className={styles.listContentItem}>
-      <Tag  color="#55acee" >{year}学年</Tag>
-      <Tag color={semester==='春季'?'green':(semester==='夏季'?'red':'orange')}>{semester}学期</Tag>
-      <Tag color='cyan'>{duration}</Tag>
-    </div>
-  </div>
-);
 
 export const CourseList = (props) => {
   const {
@@ -41,9 +27,9 @@ export const CourseList = (props) => {
     dispatch({
       type: 'courseList/fetch',
       payload: {
-        uid:123,
-        role:'student',
-        list_type:0,
+        uid: 123,
+        role: 'student',
+        list_type: 0,
       },
     });
   }, [1]);
@@ -75,9 +61,7 @@ export const CourseList = (props) => {
     </div>
   );
 
-  function searchValueChange(value){
-    console.log(value);
-
+  function searchValueChange(value) {
     setShowList(list.filter((item) => {
       return item.title.indexOf(value) != -1 || item.intro.indexOf(value) != -1 || item.teacher.indexOf(value) != -1
         || item.year.indexOf(value) != -1 || item.semester.indexOf(value) != -1 || item.duration.indexOf(value) != -1;
@@ -85,7 +69,7 @@ export const CourseList = (props) => {
   }
 
   function radioChange(e) {
-    let list_type ;
+    let list_type;
     if (e.target.value === "progressing") {
       list_type = 0;
     } else if (e.target.value === "finish") {
@@ -128,13 +112,25 @@ export const CourseList = (props) => {
               renderItem={(item) => (
                 <List.Item>
                   <List.Item.Meta
-                    avatar={<Avatar src={item.avatar} shape="square" size="large" />}
-                    title={<a onClick={()=>{console.log(item);
-                      history.push({ pathname: '/course/center', state: { sid: item.id,title:item.title } });
-                    }}>{item.title}</a>}
-                    description={item.intro}
+                    avatar={<Avatar src={item.course.avatar} shape="square" size="large" />}
+                    title={<a onClick={() => {
+                      history.push({ pathname: '/course/center', state: { sid: item.course.courseId, title: item.course.title } });
+                    }}>{item.course.title}</a>}
+                    description={item.course.description}
                   />
-                  <ListContent data={item} />
+                  <div className={styles.listContent}>
+                  <div className={styles.listContentItem}>
+                      <span>课号</span>
+                      <p>{item.course.courseId}</p>
+                    </div>
+                    <div className={styles.listContentItem}>
+                      <span>任课教师</span>
+                      <p>{item.teacher.name}</p>
+                    </div>
+                    <div className={styles.listContentItem}>
+                      <Tag color="#55acee">{item.semester}学期</Tag>
+                    </div>
+                  </div>
                 </List.Item>
               )}
             />

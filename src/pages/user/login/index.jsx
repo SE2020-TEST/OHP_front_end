@@ -25,7 +25,7 @@ const Login = (props) => {
     const { dispatch } = props;
     
     let payload = {};
-    payload.role = type;
+    payload.role = type == "student" ? 0 : 1;
     if (type == "student") {
       payload.uid = values.userid;
       payload.password = values.password;
