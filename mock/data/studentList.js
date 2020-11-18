@@ -7,7 +7,7 @@ for (let i = 0; i < 140; ++i) {
     studentList.push({
         name: studentNames[i % studentNames.length],
         avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
-        userId: `5180219100${i}`,
+        userId: `518${i}`,
         email: 'livingsu@sjtu.edu.cn',
         phone: '17872003000',
         role: 0,

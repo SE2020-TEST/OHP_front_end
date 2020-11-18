@@ -2,6 +2,8 @@ import { Form, Button, Col, Input, Popover, Progress, Row, Select, message } fro
 import React, { useState, useEffect } from 'react';
 import { Link, connect, history, FormattedMessage, formatMessage } from 'umi';
 import styles from './style.less';
+import request from 'umi-request';
+
 const FormItem = Form.Item;
 const { Option } = Select;
 const InputGroup = Input.Group;
@@ -61,6 +63,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
   );
 
   const onGetCaptcha = () => {
+    message.success("验证码是123")
     let counts = 59;
     setcount(counts);
     interval = window.setInterval(() => {
@@ -88,10 +91,28 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
   };
 
   const onFinish = (values) => {
-    dispatch({
-      type: 'userAndregister/submit',
-      payload: { ...values, prefix },
-    });
+
+    console.log("register")
+    console.log(values)
+
+    request('http://localhost:8080/user/register', {
+      method: 'POST',
+      data: values,
+    }).then(function(response) {
+      console.log(response);
+      if(response.code==0){
+        message.success("注册成功");
+        history.push({
+          pathname: '/user/register-result',
+          state: {
+            account:values.email,
+          },
+        });
+      }else{
+        message.error(response.message);
+      }
+    })
+
   };
 
   const checkConfirm = (_, value) => {
@@ -159,10 +180,16 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
         注册
       </h3>
       <Form form={form} name="UserRegister" onFinish={onFinish}>
-        <FormItem name="role">
-          <Select defaultValue="student">
-            <Option value="student">学生</Option>
-            <Option value="teacher">教师</Option>
+        <FormItem name="role"
+         rules={[
+          {
+            required: true,
+            message: '请输入注册角色！',
+          },
+        ]}>
+          <Select>
+            <Option value={0}>学生</Option>
+            <Option value={1}>教师</Option>
           </Select>
         </FormItem>
         <FormItem
@@ -195,7 +222,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
           />
         </FormItem>
         <FormItem
-          name="mail"
+          name="email"
           rules={[
             {
               required: true,
@@ -298,7 +325,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             style={{
               width: '80%',
             }}
-            name="mobile"
+            name="phone"
             rules={[
               {
                 required: true,
@@ -319,7 +346,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
         <Row gutter={8}>
           <Col span={16}>
             <FormItem
-              name="captcha"
+              name="vcode"
               rules={[
                 {
                   required: true,

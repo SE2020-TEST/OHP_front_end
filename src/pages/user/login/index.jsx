@@ -1,8 +1,11 @@
-import { Alert } from 'antd';
+import { Alert, message } from 'antd';
 import React, { useState } from 'react';
-import { Link, connect } from 'umi';
+import { Link, connect, history } from 'umi';
 import LoginForm from './components/Login';
 import styles from './style.less';
+import request from 'umi-request';
+import { setAuthority } from '@/utils/authority';
+
 const { Tab, UserName, Password, Submit } = LoginForm;
 
 const LoginMessage = ({ content }) => (
@@ -18,7 +21,8 @@ const LoginMessage = ({ content }) => (
 
 const Login = (props) => {
   const { userLogin = {}, submitting } = props;
-  const { status } = userLogin;
+  //const { status } = userLogin;
+  const [status,setStatus]=useState('ok');
   const [type, setType] = useState('student');
 
   const handleSubmit = (values) => {  
@@ -29,14 +33,34 @@ const Login = (props) => {
     if (type == "student") {
       payload.uid = values.userid;
       payload.password = values.password;
+      values.role=0;
     } else {
       payload.uid = values.userid_2;
       payload.password = values.password_2;
+      values.role=1;
     }
-    dispatch({
-      type: 'login/login',
-      payload: { ...payload },
-    });
+    // dispatch({
+    //   type: 'login/login',
+    //   payload: { ...payload },
+    // });
+
+    
+    console.log(payload)
+    request('http://localhost:8080/user/login', {
+      method: 'POST',
+      data: payload,
+    }).then(function(response) {
+      console.log(response);
+      if(response.code==0){
+        message.success("登录成功");
+        setStatus('ok');
+        history.push('/');
+        setAuthority(response.data.role==0?'user':'admin');
+      }else{
+        setStatus('error');
+        message.error(response.message);
+      }
+    })
   };
 
   console.log("status:"+status)

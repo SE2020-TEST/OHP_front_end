@@ -1,6 +1,8 @@
 import request from 'umi-request';
 export async function fakeRegister(params) {
-  return request('/api/register', {
+  console.log("register")
+  console.log(params)
+  return request('http://localhost:8080/user/register', {
     method: 'POST',
     data: params,
   });

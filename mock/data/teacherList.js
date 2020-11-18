@@ -7,7 +7,7 @@ for (let i = 0; i < 20; ++i) {
     teacherList.push({
         name: teacherNames[i % teacherNames.length],
         avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
-        userId: `0000${i}`,
+        userId: `418${i}`,
         email: 'livingsu@sjtu.edu.cn',
         phone: '17872003000',
         role: 1,
