@@ -10,6 +10,7 @@ import {
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect, history } from 'umi';
 import styles from './style.less';
+import { getAuthority } from '../../../utils/authority';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -27,8 +28,9 @@ export const CourseList = (props) => {
     dispatch({
       type: 'courseList/fetch',
       payload: {
-        uid: 123,
-        role: 'student',
+        uid: 5180,
+        //role: getAuthority()[0] == 'user' ? 0 : 1,
+        role: 0,
         list_type: 0,
       },
     });
@@ -80,12 +82,17 @@ export const CourseList = (props) => {
     dispatch({
       type: 'courseList/fetch',
       payload: {
-        uid: 123,
-        role: 'student',
+        // uid: 123,
+        // role: 'student',
+        // list_type: list_type,
+        uid: 5180,
+        role: 0,
         list_type: list_type,
       },
     });
   }
+
+  console.log(showList)
 
   return (
     <div>
@@ -114,7 +121,7 @@ export const CourseList = (props) => {
                   <List.Item.Meta
                     avatar={<Avatar src={item.course.avatar} shape="square" size="large" />}
                     title={<a onClick={() => {
-                      history.push({ pathname: '/course/center', state: { sid: item.course.courseId, title: item.course.title } });
+                      history.push({ pathname: '/course/center', state: { sid: item.id, title: item.course.title } });
                     }}>{item.course.title}</a>}
                     description={item.course.description}
                   />
@@ -124,8 +131,10 @@ export const CourseList = (props) => {
                       <p>{item.course.courseId}</p>
                     </div>
                     <div className={styles.listContentItem}>
-                      <span>任课教师</span>
-                      <p>{item.teacher.name}</p>
+                      {/* <span>任课教师</span>
+                      <p>{item.teacher.name}</p> */}
+                      <span>结束时间</span>
+                      <p>{item.endTime}</p>
                     </div>
                     <div className={styles.listContentItem}>
                       <Tag color="#55acee">{item.semester}学期</Tag>

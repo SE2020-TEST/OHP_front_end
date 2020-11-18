@@ -10,11 +10,13 @@ import {
   Radio,
   Tag,
 } from 'antd';
-import { findDOMNode } from 'react-dom';
+//import { findDOMNode } from 'react-dom';
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect, history } from 'umi';
-import moment from 'moment';
 import OperationModal from './components/OperationModal';
+import RegisterCourseModal from './components/RegisterCourseModal';
+import AddSectionModal from './components/AddSectionModal';
+import PicturesWall from './components/PicturesWall';
 import styles from './style.less';
 
 const RadioButton = Radio.Button;
@@ -23,22 +25,21 @@ const { Search } = Input;
 
 
 export const ManageCourseList = (props) => {
-  const addBtn = useRef(null);
   const {
     loading,
     dispatch,
     courseList: { list },
   } = props;
-  const [done, setDone] = useState(false);
+
+  //用于modal的state
   const [visible, setVisible] = useState(false);
-  const [current, setCurrent] = useState(undefined);
 
   useEffect(() => {
     dispatch({
       type: 'courseList/fetch',
       payload: {
-        uid: 123,
-        role: 'student',
+        uid: 4180,
+        role: 1,
         list_type: 0,
       },
     });
@@ -54,26 +55,6 @@ export const ManageCourseList = (props) => {
     showQuickJumper: true,
     pageSize: 7,
   };
-
-  const showModal = () => {
-    setVisible(true);
-    setCurrent(undefined);
-  };
-
-  const showEditModal = (item) => {
-    setVisible(true);
-    setCurrent(item);
-  };
-
-  const deleteItem = (id) => {
-    dispatch({
-      type: 'manageCourseList/submit',
-      payload: {
-        id,
-      },
-    });
-  };
-
 
   const radioContent = (
     <div className={styles.extraContent}>
@@ -110,54 +91,28 @@ export const ManageCourseList = (props) => {
     dispatch({
       type: 'courseList/fetch',
       payload: {
-        uid: 123,
-        role: 'student',
+        uid: 4180,
+        role: 1,
         list_type: list_type,
       },
     });
   }
 
-  const setAddBtnblur = () => {
-    if (addBtn.current) {
-      const addBtnDom = findDOMNode(addBtn.current);
-      setTimeout(() => addBtnDom.blur(), 0);
-    }
-  };
-
-  const handleDone = () => {
-    setAddBtnblur();
-    setDone(false);
-    setVisible(false);
-  };
-
-  const handleCancel = () => {
-    setAddBtnblur();
-    setVisible(false);
-  };
-
   const handleDelete = (item) => {
     console.log("delete")
     console.log(item)
-
-
   }
 
-  const handleSubmit = (values) => {
-    const id = current ? current.id : '';
-    setAddBtnblur();
-    setDone(true);
-    dispatch({
-      type: 'manageCourseList/submit',
-      payload: {
-        id,
-        ...values,
-      },
-    });
+  //用于modal的函数
+  const showModal = () => {
+    setVisible(true);
   };
 
   return (
     <div>
       <PageContainer>
+        {/* <PicturesWall/> */}
+
         <div className={styles.standardList}>
           <Card
             className={styles.listCard}
@@ -171,18 +126,31 @@ export const ManageCourseList = (props) => {
             }}
             extra={searchContent}
           >
-            <Button
+            {/* <Button
               type="dashed"
               style={{
-                width: '100%',
+                width: '50%',
+                marginBottom: 8,
+              }}
+              onClick={showModal}             
+            >
+              <PlusOutlined />
+              注册新课程
+            </Button> */}
+            <RegisterCourseModal/>
+            <AddSectionModal/>
+
+            {/* <Button
+              type="dashed"
+              style={{
+                width: '50%',
                 marginBottom: 8,
               }}
               onClick={showModal}
-              ref={addBtn}
             >
               <PlusOutlined />
-              新建课程
-            </Button>
+              新建课程(选择学期)
+            </Button> */}
 
             <List
               size="large"
@@ -205,7 +173,7 @@ export const ManageCourseList = (props) => {
                   <List.Item.Meta
                     avatar={<Avatar src={item.course.avatar} shape="square" size="large" />}
                     title={<a onClick={() => {
-                      history.push({ pathname: '/manage/course/center', state: { sid: item.course.courseId,title: item.course.title } });
+                      history.push({ pathname: '/manage/course/center', state: { sid: item.id,title: item.course.title } });
                     }}>{item.course.title}</a>}
                     description={item.course.description}
                   />
@@ -215,8 +183,10 @@ export const ManageCourseList = (props) => {
                       <p>{item.course.courseId}</p>
                     </div>
                     <div className={styles.listContentItem}>
-                      <span>任课教师</span>
-                      <p>{item.teacher.name}</p>
+                      {/* <span>任课教师</span>
+                      <p>{item.teacher.name}</p> */}
+                      <span>结束时间</span>
+                      <p>{item.endTime}</p>
                     </div>
                     <div className={styles.listContentItem}>
                       <Tag color="#55acee">{item.semester}学期</Tag>
@@ -229,14 +199,7 @@ export const ManageCourseList = (props) => {
         </div>
       </PageContainer>
 
-      <OperationModal
-        done={done}
-        current={current}
-        visible={visible}
-        onDone={handleDone}
-        onCancel={handleCancel}
-        onSubmit={handleSubmit}
-      />
+      
     </div>
   );
 };

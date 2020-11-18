@@ -60,7 +60,8 @@ class CourseInfoView extends Component {
             description={
               <Descriptions title={courseInfo.course.title}>
                 <Descriptions.Item label={"课号"}>{courseInfo.course.courseId}</Descriptions.Item>
-                <Descriptions.Item label={"任课教师"}>{courseInfo.teacher.name}</Descriptions.Item>
+                {/* <Descriptions.Item label={"任课教师"}>{courseInfo.teacher.name}</Descriptions.Item> */}
+                <Descriptions.Item  label={"结束时间"}>{courseInfo.endTime}</Descriptions.Item>
                 <Descriptions.Item >{courseInfo.semester}</Descriptions.Item>
               </Descriptions>}
           />

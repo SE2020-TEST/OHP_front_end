@@ -59,7 +59,7 @@ const Model = {
   reducers: {
     changeLoginStatus(state, { payload }) {
       console.log(payload)
-      setAuthority(payload.data.role=='student'?'user':'admin');
+      setAuthority(payload.data.role==0?'user':'admin');
       return { ...state, status: payload.code == 0 ? 'ok' : 'error', type: payload.type };
     },
   },

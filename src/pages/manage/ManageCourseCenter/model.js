@@ -19,7 +19,7 @@ const Model = {
       const response = yield call(queryUserList, payload);
       yield put({
         type: 'saveUserList',
-        payload: Array.isArray(response) ? response : [],
+        payload: Array.isArray(response.data) ? response.data : [],
       });
     },
 

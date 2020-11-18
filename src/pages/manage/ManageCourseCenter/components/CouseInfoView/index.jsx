@@ -1,14 +1,14 @@
 import { UploadOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Upload, Form, message, Tooltip } from 'antd';
-import { connect, FormattedMessage, formatMessage } from 'umi';
+import { connect } from 'umi';
 import React, { Component } from 'react';
 import styles from './index.less';
-const { Option } = Select; // 头像组件 方便以后独立，增加裁剪之类的功能
+const { Option } = Select;
 
 const AvatarView = ({ avatar }) => (
   <>
     <div className={styles.avatar_title}>
-      <FormattedMessage id="accountsettings.basic.avatar" defaultMessage="Avatar" />
+      头像
     </div>
     <div className={styles.avatar}>
       <img src={avatar} alt="avatar" />
@@ -17,10 +17,7 @@ const AvatarView = ({ avatar }) => (
       <div className={styles.button_view}>
         <Button>
           <UploadOutlined />
-          <FormattedMessage
-            id="accountsettings.basic.change-avatar"
-            defaultMessage="Change avatar"
-          />
+          更换头像
         </Button>
       </div>
     </Upload>
@@ -39,6 +36,7 @@ class CourseInfoView extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
 
+    console.log("sid:"+this.state.sid)
     if (this.state.sid != undefined) {
       dispatch({
         type: 'courseCenter/fetchCourseInfo',
@@ -78,14 +76,13 @@ class CourseInfoView extends Component {
       return "";
     }
 
-    console.log(courseInfo);
-
     let info = {};
     info.title = courseInfo.course.title;
     info.cid=courseInfo.course.courseId;
     info.semester = courseInfo.semester;
     info.description = courseInfo.course.description;
     info.textbook = courseInfo.course.textbook;
+    
     
 
     return (
@@ -122,12 +119,6 @@ class CourseInfoView extends Component {
             <Form.Item
               name="semester"
               label={"学期"}
-              rules={[
-                {
-                  required: true,
-                  message: '请输入学期!',
-                },
-              ]}
             >
               <Select style={{ width: 120 }}>
                 <Option value="2019春季">2019春季</Option>
@@ -167,10 +158,7 @@ class CourseInfoView extends Component {
             </Form.Item>
             <Form.Item>
               <Button htmlType="submit" type="primary">
-                <FormattedMessage
-                  id="accountsettings.basic.update"
-                  defaultMessage="Update Information"
-                />
+                更新课程信息
               </Button>
             </Form.Item>
           </Form>

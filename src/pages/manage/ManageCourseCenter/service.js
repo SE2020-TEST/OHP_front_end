@@ -5,5 +5,6 @@ export async function querySubmission(params) {
 }
 
 export async function queryUserList(params) {
-  return request.post('/hw/users',{params});
+  console.log(params)
+  return request.post('http://localhost:8080/section/userlist', { data: params });
 }

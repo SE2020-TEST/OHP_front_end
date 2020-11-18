@@ -191,6 +191,13 @@ export default defineConfig({
   title: false,
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],
+  // proxy: {
+  //   '/myapi': {
+  //     target: 'http://localhost:8080/',
+  //     changeOrigin: true,
+  //     pathRewrite: { '^myapi': '' },
+  //   },
+  // },
   manifest: {
     basePath: '/',
   },

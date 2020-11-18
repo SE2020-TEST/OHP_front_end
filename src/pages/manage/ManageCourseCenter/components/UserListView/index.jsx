@@ -32,33 +32,31 @@ class UserListView extends React.Component {
         };
 
         const { userList } = this.props;
+
         if (!Array.isArray(userList)) {
             return "";
         }
 
-        console.log("userlist")
-        console.log(userList);
-
         const userColumns = [
             {
                 title: <b></b>,
-                dataIndex: 'avatar',
                 width: "10%",
+                dataIndex: 'phone',
                 render: (text) => {
                     return <Avatar src={text} />
                 }
             },
             {
                 title: <b>姓名</b>,
-                dataIndex: 'username',
+                dataIndex: 'name',
             },
             {
                 title: <b>学号</b>,
-                dataIndex: 'userid',
+                dataIndex: 'id',
             },
             {
-                title: <b>身份</b>,
-                dataIndex: 'role',
+                title: <b>手机号</b>,
+                dataIndex: 'phone',
             },
             {
                 title: <b>操作</b>,

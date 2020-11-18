@@ -35,7 +35,7 @@ const Model = {
   },
   reducers: {
     saveCourseInfo(state, action) {
-      return { ...state, courseInfo: action.payload || {} };
+      return { ...state, courseInfo: action.payload.data || {} };
     },
 
     saveHwList(state, action) {

@@ -1,8 +1,8 @@
 import request from 'umi-request';
 
 export async function queryFakeList(params) {
-  return request.post('/section/list', {
-     params,
+  return request.post('http://localhost:8080/section/list', {
+    data: params,
   });
 }
 export async function removeFakeList(params) {

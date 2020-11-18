@@ -1,7 +1,7 @@
 import request from 'umi-request';
 
 export async function queryCourseInfo(params) {
-  return request.post('/section/info',{params});
+  return request.post('http://localhost:8080/section/info', { data: params });
 }
 
 export async function queryHwList(params) {
