@@ -65,8 +65,8 @@ export const CourseList = (props) => {
 
   function searchValueChange(value) {
     setShowList(list.filter((item) => {
-      return item.title.indexOf(value) != -1 || item.intro.indexOf(value) != -1 || item.teacher.indexOf(value) != -1
-        || item.year.indexOf(value) != -1 || item.semester.indexOf(value) != -1 || item.duration.indexOf(value) != -1;
+      return item.course.title.indexOf(value) != -1 || item.course.description.indexOf(value) != -1|| item.course.courseId.indexOf(value) != -1
+      || item.endTime.indexOf(value) != -1 || item.semester.indexOf(value) != -1 
     }));
   }
 
@@ -137,7 +137,7 @@ export const CourseList = (props) => {
                       <p>{item.endTime}</p>
                     </div>
                     <div className={styles.listContentItem}>
-                      <Tag color="#55acee">{item.semester}学期</Tag>
+                      <Tag color="#55acee">{item.semester}</Tag>
                     </div>
                   </div>
                 </List.Item>
