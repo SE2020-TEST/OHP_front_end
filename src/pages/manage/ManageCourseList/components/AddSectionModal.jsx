@@ -35,7 +35,8 @@ const AddSectionModal = () => {
       data: {
         cid: value.cid,
         semester: value.semester,
-        endTime: "2020.12.12"
+        endTime: "2020.12.12",
+        uid:"4180",
       },
     }).then(function(response) {
       console.log(response);

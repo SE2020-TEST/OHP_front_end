@@ -9,6 +9,8 @@ import {
   Modal,
   Radio,
   Tag,
+  Popconfirm,
+  message,
 } from 'antd';
 //import { findDOMNode } from 'react-dom';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -18,6 +20,7 @@ import RegisterCourseModal from './components/RegisterCourseModal';
 import AddSectionModal from './components/AddSectionModal';
 import PicturesWall from './components/PicturesWall';
 import styles from './style.less';
+import request from 'umi-request';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -30,9 +33,6 @@ export const ManageCourseList = (props) => {
     dispatch,
     courseList: { list },
   } = props;
-
-  //用于modal的state
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     dispatch({
@@ -101,13 +101,18 @@ export const ManageCourseList = (props) => {
   const handleDelete = (item) => {
     console.log("delete")
     console.log(item)
+
+    dispatch({
+      type: 'courseList/deleteOne',
+      payload: {
+        sid:item.id
+      },
+    });
   }
 
-  //用于modal的函数
-  const showModal = () => {
-    setVisible(true);
-  };
-
+  console.log("list")
+  console.log(list)
+  console.log(showList)
   return (
     <div>
       <PageContainer>
@@ -161,13 +166,21 @@ export const ManageCourseList = (props) => {
               renderItem={(item) => (
                 <List.Item
                   actions={[
-                    <a
-                      onClick={() => {
-                        handleDelete(item)
-                      }}
+                    // <a
+                    //   onClick={() => {
+                    //     handleDelete(item)
+                    //   }}
+                    // >
+                    //   删除
+                    // </a>,
+                    <Popconfirm
+                      title="确认删除该课程？"
+                      onConfirm={() => { handleDelete(item) }}
+                      okText="Yes"
+                      cancelText="No"
                     >
-                      删除
-                    </a>,
+                      <a href="#">删除</a>
+                    </Popconfirm>,
                   ]}
                 >
                   <List.Item.Meta

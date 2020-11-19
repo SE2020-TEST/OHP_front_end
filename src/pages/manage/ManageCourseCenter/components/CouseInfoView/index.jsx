@@ -3,6 +3,8 @@ import { Button, Input, Select, Upload, Form, message, Tooltip } from 'antd';
 import { connect } from 'umi';
 import React, { Component } from 'react';
 import styles from './index.less';
+import request from 'umi-request';
+
 const { Option } = Select;
 
 const AvatarView = ({ avatar }) => (
@@ -63,10 +65,26 @@ class CourseInfoView extends Component {
   }
 
   handleSubmit = (value) => {
-    //这里更新个人信息
-    console.log(value)
+    const { courseInfo } = this.props;
 
-    message.success("更新课程信息成功");
+    //这里更新课程信息
+    let params={};
+    params.cid=value.cid;
+    params.avatar=courseInfo.course.avatar;
+    params.title=value.title;
+    params.textbook=value.textbook;
+    params.intro=value.description;
+
+
+    request.post('http://localhost:8080/course/update',{data:params})
+    .then(function(res){
+      console.log(res);
+      if(res.code==0){
+        message.success("更新课程信息成功");
+      }else{
+        message.error(res.message);
+      }
+    })
   };
 
   render() {
@@ -82,9 +100,6 @@ class CourseInfoView extends Component {
     info.semester = courseInfo.semester;
     info.description = courseInfo.course.description;
     info.textbook = courseInfo.course.textbook;
-    
-    
-
     return (
       <div className={styles.baseView}>
         <div className={styles.left}>
