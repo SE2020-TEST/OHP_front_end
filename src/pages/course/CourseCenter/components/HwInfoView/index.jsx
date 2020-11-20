@@ -1,10 +1,11 @@
 import React from "react";
-import { Divider, Button, Card, Form } from "antd";
+import { Divider, Button, Card, Form, message } from "antd";
 import BraftEditor from 'braft-editor'
 import { connect } from 'umi';
 import { CheckOutlined } from '@ant-design/icons';
 import './BraftEditor.css';
 import './index.css'
+import request from 'umi-request';
 
 
 class HwInfoView extends React.Component {
@@ -46,9 +47,46 @@ class HwInfoView extends React.Component {
         return <div dangerouslySetInnerHTML={html}></div>;
     }
 
+    handleSubmit = () => {
+        console.log(this.state.hwid)
+        console.log(this.state.HTMLCommit)
+        const { dispatch,hwid } = this.props;
+
+        let params={
+            uid:0,
+            hwid: hwid,
+            content: this.state.HTMLCommit
+        };
+        
+        // dispatch({
+        //     type: 'courseCenter/commitHw',
+        //     payload: {
+        //         hwid: this.props.hwid,
+        //         content: this.state.HTMLCommit
+        //     },
+        // })
+
+        request.post('/hw/commit',{data:params})
+        .then(function(res){
+            console.log(res)
+            if(res.code==0){
+                message.success('提交作业成功！');
+                dispatch({
+                    type: 'courseCenter/fetchHwInfo',
+                    payload: {
+                        hwid: hwid,
+                    },
+                })
+            }
+        })
+    }
+
+
     render() {
         const { editorCommit } = this.state;
         const { hwInfo } = this.props;
+
+        console.log(hwInfo);
 
         if (JSON.stringify(hwInfo) == "{}") {
             return "";
@@ -130,7 +168,7 @@ class HwInfoView extends React.Component {
                         <Divider />
                         <div className={"hw-title1"}>批注</div>
                         <Divider />
-                        <p>{hwInfo.comment}</p>
+                        <p>{this.string2html(hwInfo.comment)}</p>
                         <Divider />
                         <div className={"hw-title1"}>留言</div>
                         <Divider />

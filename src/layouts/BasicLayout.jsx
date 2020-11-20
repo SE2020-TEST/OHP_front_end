@@ -12,6 +12,8 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { getMatchMenu } from '@umijs/route-utils';
 import logo from '../assets/logo.svg';
+import {getAuthority} from '../utils/authority';
+
 const noMatch = (
   <Result
     status={403}
@@ -62,9 +64,12 @@ const BasicLayout = (props) => {
   } = props;
   const menuDataRef = useRef([]);
   useEffect(() => {
-    if (dispatch) {
+    if (dispatch && getAuthority()) {
       dispatch({
         type: 'user/fetchCurrent',
+        payload: {
+          usertype: getAuthority()[0]=='user'?0:1
+        }
       });
     }
   }, []);

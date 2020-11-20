@@ -11,3 +11,7 @@ export async function queryHwList(params) {
 export async function queryHwInfo(params) {
   return request.post('/hw/info',{params});
 }
+
+export async function commitHw(params) {
+  return request.post('/hw/commit',{params});
+}

@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import BraftEditor from 'braft-editor'
 import { connect } from 'umi';
 import './BraftEditor.css';
+import request from 'umi-request';
+
 
 class HwCheckView extends Component {
     constructor(props) {
@@ -24,11 +26,23 @@ class HwCheckView extends Component {
     }
 
     handleSubmit = (value) => {
-        //这里更新课程信息
         value.comment = this.state.HTMLComment;
-    
+        value.hwid=this.props.hwid;
+
         console.log(value)
-        message.success("更新课程信息成功");
+        request('/hw/check',{
+            method:'POST',
+            data:value
+        }).then(res=>{
+            console.log("res")
+            console.log(res)
+            if(res.code==0){
+                message.success("批改作业成功");
+            }else{
+                message.error("批改作业失败");
+            }
+        })
+      
     };
 
 

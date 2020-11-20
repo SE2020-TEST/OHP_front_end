@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import BraftEditor from 'braft-editor'
 import './BraftEditor.css';
+import request from 'umi-request';
 
 class HwCreateView extends Component {
     constructor(props) {
@@ -16,7 +17,6 @@ class HwCreateView extends Component {
         }
     }
 
-
     handleSubmit = (value) => {
         //这里更新课程信息
         value.deadline = value.deadline.format('YYYY-MM-DD HH:mm:ss');
@@ -24,7 +24,15 @@ class HwCreateView extends Component {
         value.answer = this.state.HTMLAnswer;
 
         console.log(value)
-        message.success("新建课程信息成功");
+        
+
+        request.post('/hw/add',{data:value})
+        .then(function(res){
+            console.log(res)
+            if(res.code==0){
+                message.success('新建作业成功！');
+            }
+        })
     };
 
 
@@ -76,7 +84,7 @@ class HwCreateView extends Component {
                         <DatePicker showTime disabledDate={disabledDate} />
                     </Form.Item>
                     <Form.Item
-                        name="content"
+                        //name="content"
                         label={"作业要求"}
                         rules={[
                             {

@@ -2,6 +2,8 @@ import React from 'react';
 import { PageLoading } from '@ant-design/pro-layout';
 import { Redirect, connect } from 'umi';
 import { stringify } from 'querystring';
+import {getAuthority} from '../utils/authority';
+
 
 class SecurityLayout extends React.Component {
   state = {
@@ -14,9 +16,12 @@ class SecurityLayout extends React.Component {
     });
     const { dispatch } = this.props;
 
-    if (dispatch) {
+    if (dispatch && getAuthority()) {
       dispatch({
         type: 'user/fetchCurrent',
+        payload: {
+          usertype: getAuthority()[0]=='user'?0:1
+        }
       });
     }
   }

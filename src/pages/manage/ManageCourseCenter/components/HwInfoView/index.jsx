@@ -85,7 +85,9 @@ class HwInfoView extends React.Component {
         const hwColumns = [
             {
                 title: <b>提交者姓名</b>,
-                dataIndex: 'username',
+                render: (text,record) => {
+                    return record.user.name;
+                }
             },
             {
                 title: <b>完成情况</b>,
@@ -127,16 +129,22 @@ class HwInfoView extends React.Component {
             },
             {
                 title: <b>姓名</b>,
-                dataIndex: 'username',
+                dataIndex: 'name',
             },
             {
                 title: <b>学号</b>,
-                dataIndex: 'userid',
+                dataIndex: 'userId',
+            },
+            {
+                title: <b>邮箱</b>,
+                dataIndex: 'email',
             },
             {
                 title: <b>身份</b>,
                 dataIndex: 'role',
-
+                render:(text)=>{
+                    return text==0?'学生':'教师';
+                }
             },
         ];
 
@@ -146,6 +154,9 @@ class HwInfoView extends React.Component {
             || !Array.isArray(submission.hwDetialList) || !Array.isArray(submission.notSubmitUserList)) {
             return "";
         }
+
+        console.log("submit")
+        console.log(submission)
 
         return (
             <div>

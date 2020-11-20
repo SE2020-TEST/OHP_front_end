@@ -1,4 +1,4 @@
-import { queryCourseInfo, queryHwList,queryHwInfo} from './service';
+import { queryCourseInfo, queryHwList,queryHwInfo,commitHw} from './service';
 
 const Model = {
   namespace: 'courseCenter',
@@ -30,6 +30,10 @@ const Model = {
         type: 'saveHwInfo',
         payload: response,
       });
+    },
+
+    *commitHw({ payload }, { call, put }) {
+      yield call(commitHw, payload);
     },
 
   },
