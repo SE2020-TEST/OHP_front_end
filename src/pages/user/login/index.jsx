@@ -1,32 +1,19 @@
-import { Alert, message } from 'antd';
 import React, { useState } from 'react';
-import { Link, connect, history } from 'umi';
+import { Link, history } from 'umi';
 import LoginForm from './components/Login';
 import styles from './style.less';
-import request from 'umi-request';
+import {postRequest} from '../../../utils/request';
+import { setUserinfo, getUserinfo } from '../../../utils/userinfo';
 import { setAuthority } from '@/utils/authority';
 
 const { Tab, UserName, Password, Submit } = LoginForm;
 
-const LoginMessage = ({ content }) => (
-  <Alert
-    style={{
-      marginBottom: 24,
-    }}
-    message={content}
-    type="error"
-    showIcon
-  />
-);
-
-const Login = (props) => {
-  const { userLogin = {}, submitting } = props;
-  //const { status } = userLogin;
-  const [status,setStatus]=useState('ok');
+const Login = () => {
   const [type, setType] = useState('student');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (values) => {  
-    const { dispatch } = props;
+  const handleSubmit = (values) => { 
+    setLoading(true);
     
     let payload = {};
     payload.role = type == "student" ? 0 : 1;
@@ -39,40 +26,23 @@ const Login = (props) => {
       payload.password = values.password_2;
       values.role=1;
     }
-    // dispatch({
-    //   type: 'login/login',
-    //   payload: { ...payload },
-    // });
 
-    
-    console.log(payload)
-    request('http://localhost:8080/user/login', {
-      method: 'POST',
-      data: payload,
-    }).then(function(response) {
-      console.log(response);
-      if(response.code==0){
-        message.success("登录成功");
-        setStatus('ok');
-        history.push('/');
-        setAuthority(response.data.role==0?'user':'admin');
-      }else{
-        setStatus('error');
-        message.error(response.message);
-      }
-    })
+    function callback(data){
+      setUserinfo(data);
+      setAuthority(data.role==0?'user':'admin');
+      history.push('/');
+    }
+    function setLoadFalse(){
+      setLoading(false);
+      UserName.values='';
+    }
+    postRequest('/user/login',payload,callback,setLoadFalse);
   };
-
-  console.log("status:"+status)
-  console.log("submitting:"+submitting)
   
   return (
     <div className={styles.main}>
       <LoginForm activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
         <Tab key="student" tab="学生登录">
-          {status === 'error' && !submitting && (
-            <LoginMessage content="账户或密码错误（admin/ant.design）" />
-          )}
           <UserName
             name="userid"
             placeholder="学号"
@@ -95,9 +65,6 @@ const Login = (props) => {
           />
         </Tab>
         <Tab key="teacher" tab="教师登录">
-        {status === 'error' && !submitting && (
-            <LoginMessage content="账户或密码错误（admin/ant.design）" />
-          )}
           <UserName
             name="userid_2"
             placeholder="工号"
@@ -131,13 +98,10 @@ const Login = (props) => {
             忘记密码
           </a>
         </div>
-        <Submit loading={submitting}>登录</Submit>
+        <Submit loading={loading}>登录</Submit>
       </LoginForm>
     </div>
   );
 };
 
-export default connect(({ login, loading }) => ({
-  userLogin: login,
-  submitting: loading.effects['login/login'],
-}))(Login);
+export default Login;

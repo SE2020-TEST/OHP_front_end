@@ -3,6 +3,7 @@ import { history } from 'umi';
 import { fakeAccountLogin } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
+import { removeUserinfo } from '@/utils/userinfo';
 
 
 const Model = {
@@ -24,6 +25,10 @@ const Model = {
         const params = getPageQuery();
         let { redirect } = params;
 
+        console.log('rediretn')
+        console.log(params)
+        console.log(redirect)
+        
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
 
@@ -46,6 +51,7 @@ const Model = {
     logout() {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
 
+      removeUserinfo();
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
           pathname: '/user/login',

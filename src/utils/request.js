@@ -3,7 +3,7 @@
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
 import { extend } from 'umi-request';
-import { notification } from 'antd';
+import { notification, message } from 'antd';
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -37,8 +37,8 @@ const errorHandler = (error) => {
     });
   } else if (!response) {
     notification.error({
-      description: '您的网络发生异常，无法连接服务器',
       message: '网络异常',
+      description: '您的网络发生异常，无法连接服务器',
     });
   }
 
@@ -51,6 +51,29 @@ const errorHandler = (error) => {
 const request = extend({
   errorHandler,
   // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+  //credentials: 'include', // 默认请求是否带上cookie
 });
+
+const baseUrl='http://localhost:8080';
+
+export const postRequest=(url,data,callback,setLoadFalse)=>{
+  let completeUrl=baseUrl+url;
+  request(completeUrl,{
+    method:'POST',
+    data:data
+  }).then(res=>{
+    setLoadFalse();
+    if (res) {
+      if (res.code == 0) {
+        callback(res.data);
+      } else {
+        notification.error({
+          message: '网络请求错误',
+          description: res.message,
+        });
+      }
+    }
+  })
+}
+
 export default request;
