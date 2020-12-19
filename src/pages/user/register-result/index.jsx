@@ -4,11 +4,6 @@ import React from 'react';
 import styles from './style.less';
 const actions = (
   <div className={styles.actions}>
-    <a href="">
-      <Button size="large" type="primary">
-        <FormattedMessage id="userandregister-result.register-result.view-mailbox" />
-      </Button>
-    </a>
     <Link to="/user/login">
       <Button size="large">
         去登录
@@ -29,11 +24,6 @@ const RegisterResult = ({ location }) => (
             email: location?.state?.account || 'AntDesign@example.com',
           }}
         />
-      </div>
-    }
-    subTitle={
-      <div style={{ color: 'rgb(255, 255, 255)' }}>
-        <FormattedMessage id='userandregister-result.register-result.activation-email' />
       </div>
     }
     extra={actions}

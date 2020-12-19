@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, connect, history, FormattedMessage, formatMessage } from 'umi';
 import styles from './style.less';
 import request from 'umi-request';
+import { postRequest } from '../../../utils/request';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -38,6 +39,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
   const confirmDirty = false;
   let interval;
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (!userAndregister) {
       return;
@@ -91,27 +93,53 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
   };
 
   const onFinish = (values) => {
-
+    setLoading(true);
+    
     console.log("register")
     console.log(values)
 
-    request('http://localhost:8080/user/register', {
-      method: 'POST',
-      data: values,
-    }).then(function(response) {
-      console.log(response);
-      if(response.code==0){
-        message.success("注册成功");
-        history.push({
-          pathname: '/user/register-result',
-          state: {
-            account:values.email,
-          },
-        });
-      }else{
-        message.error(response.message);
-      }
-    })
+    const payload={
+      role:values.role,
+      uid:values.uid,
+      name:values.name,
+      email:values.email,
+      vcode:values.vcode,
+      password:values.password,
+      phone:values.phone
+    }
+    console.log(payload)
+    function callback(data){
+      //setLoading(false);
+      history.push({
+        pathname: '/user/register-result',
+        state: {
+          account: payload.email,
+        },
+      });
+    }
+    function handleErr(res){
+      setLoading(false);
+    }
+    postRequest('/user/register',payload,callback,()=>{setLoading(false);});
+
+
+    // request('http://localhost:8080/user/register', {
+    //   method: 'POST',
+    //   data: values,
+    // }).then(function(response) {
+    //   console.log(response);
+    //   if(response.code==0){
+    //     message.success("注册成功");
+    //     history.push({
+    //       pathname: '/user/register-result',
+    //       state: {
+    //         account:values.email,
+    //       },
+    //     });
+    //   }else{
+    //     message.error(response.message);
+    //   }
+    // })
 
   };
 
@@ -173,6 +201,39 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
       </div>
     ) : null;
   };
+  
+  const validatorUid = (rule, value, callback) => {
+    const role=form.getFieldValue('role');
+    if(role==undefined){
+      callback("注册角色不能为空!");
+    }
+    const payload={
+      uid:value,
+      role:role
+    }
+    function p_callback(data){
+      if(data){
+        callback('学号/工号已被占用!');
+      }else{
+        callback();
+      }
+    }
+    postRequest('/user/checkid',payload,p_callback);
+  }
+
+  const validatorEmail = (rule, value, callback) => {
+    const payload={
+      email:value
+    }
+    function p_callback(data){
+      if(data){
+        callback('邮箱已被占用!');
+      }else{
+        callback();
+      }
+    }
+    postRequest('/user/checkemail',payload,p_callback);
+  }
 
   return (
     <div className={styles.main}>
@@ -199,6 +260,9 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
               required: true,
               pattern: new RegExp(/^[1-9]\d*$/, "g"),
               message: '学号/工号的格式为纯数字！',
+            },
+            {
+              validator: validatorUid,
             },
           ]}
         >
@@ -232,6 +296,9 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
               type: 'email',
               message: '邮箱地址格式错误！',
             },
+            {
+              validator: validatorEmail,
+            },
           ]}
         >
           <Input
@@ -239,6 +306,36 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             placeholder='邮箱'
           />
         </FormItem>
+        <Row gutter={8}>
+          <Col span={16}>
+            <FormItem
+              name="vcode"
+              rules={[
+                {
+                  required: true,
+                  message:'请输入验证码！',
+                },
+              ]}
+            >
+              <Input
+                size="large"
+                placeholder='验证码'
+              />
+            </FormItem>
+          </Col>
+          <Col span={8}>
+            <Button
+              size="large"
+              disabled={!!count}
+              className={styles.getCaptcha}
+              onClick={onGetCaptcha}
+            >
+              {count
+                ? `${count} s`
+                : '获取验证码'}
+            </Button>
+          </Col>
+        </Row>
         <Popover
           getPopupContainer={(node) => {
             if (node && node.parentNode) {
@@ -343,36 +440,6 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             />
           </FormItem>
         </InputGroup>
-        <Row gutter={8}>
-          <Col span={16}>
-            <FormItem
-              name="vcode"
-              rules={[
-                {
-                  required: true,
-                  message:'请输入验证码！',
-                },
-              ]}
-            >
-              <Input
-                size="large"
-                placeholder='验证码'
-              />
-            </FormItem>
-          </Col>
-          <Col span={8}>
-            <Button
-              size="large"
-              disabled={!!count}
-              className={styles.getCaptcha}
-              onClick={onGetCaptcha}
-            >
-              {count
-                ? `${count} s`
-                : '获取验证码'}
-            </Button>
-          </Col>
-        </Row>
         <FormItem>
           <Button
             size="large"

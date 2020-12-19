@@ -1,9 +1,9 @@
 import { UploadOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Upload, Form, message, Tooltip } from 'antd';
-import { connect } from 'umi';
 import React, { Component } from 'react';
 import styles from './index.less';
 import request from 'umi-request';
+import { postRequest } from '../../../../../utils/request';
 
 const { Option } = Select;
 
@@ -32,36 +32,15 @@ class CourseInfoView extends Component {
     super(props);
     this.state = {
       sid: this.props.sid,
+      courseInfo:{},
+      avatar:"",
     }
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-
-    console.log("sid:"+this.state.sid)
     if (this.state.sid != undefined) {
-      dispatch({
-        type: 'courseCenter/fetchCourseInfo',
-        payload: {
-          sid: this.state.sid
-        },
-      })
+      postRequest('/section/info', { sid: this.state.sid }, (data) => { this.setState({ courseInfo: data, avatar: data.course.avatar }) });
     }
-  }
-
-  getAvatarURL() {
-    const { courseInfo } = this.props;
-
-    if (courseInfo) {
-      if (courseInfo.course.avatar) {
-        return courseInfo.course.avatar;
-      }
-
-      const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-      return url;
-    }
-
-    return '';
   }
 
   handleSubmit = (value) => {
@@ -86,9 +65,18 @@ class CourseInfoView extends Component {
       }
     })
   };
+  
+  beforeUpload(file) {
+    console.log('file', file);
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+        message.error('图片大于2MB!');
+    }
+    return isLt2M;
+} 
 
   render() {
-    const { courseInfo } = this.props;
+    const courseInfo=this.state.courseInfo;
 
     if (JSON.stringify(courseInfo) == "{}") {
       return "";
@@ -179,13 +167,19 @@ class CourseInfoView extends Component {
           </Form>
         </div>
         <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
+          <AvatarView avatar={this.state.avatar} />
         </div>
+        <Upload
+          name="files"
+          listType="picture-card"
+          showUploadList={false}
+          withCredentials
+          beforeUpload={this.beforeUpload}
+          onChange={this.handleChange}
+        ></Upload>
       </div>
     );
   }
 }
 
-export default connect(({ courseCenter }) => ({
-  courseInfo: courseCenter.courseInfo,
-}))(CourseInfoView);
+export default CourseInfoView;

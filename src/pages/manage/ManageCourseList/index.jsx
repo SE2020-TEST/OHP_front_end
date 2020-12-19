@@ -21,35 +21,33 @@ import AddSectionModal from './components/AddSectionModal';
 import PicturesWall from './components/PicturesWall';
 import styles from './style.less';
 import request from 'umi-request';
+import { postRequest } from '../../../utils/request';
+import { getUserinfo } from '../../../utils/userinfo';
+
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const { Search } = Input;
 
 
-export const ManageCourseList = (props) => {
-  const {
-    loading,
-    dispatch,
-    courseList: { list },
-  } = props;
-
-  useEffect(() => {
-    dispatch({
-      type: 'courseList/fetch',
-      payload: {
-        uid: 4180,
-        role: 1,
-        list_type: 0,
-      },
-    });
-  }, [1]);
+export const ManageCourseList = () => {
+  const [myList,setMyList]=useState([]);
+  function getCourseList(list_type){
+    const payload={
+      uid: getUserinfo().id,
+      role: 1,
+      list_type: list_type,
+    }
+    postRequest('/section/list',payload,(data)=>{setMyList(data);});
+  };
+  useEffect(()=>{
+    getCourseList(0);
+  },[]);
 
   const [showList, setShowList] = useState([]);
-
   useEffect(() => {
-    setShowList(list);
-  }, [list]);
+    setShowList(myList);
+  }, [myList]);
 
   const paginationProps = {
     showQuickJumper: true,
@@ -88,14 +86,7 @@ export const ManageCourseList = (props) => {
     } else {
       list_type = 2;
     }
-    dispatch({
-      type: 'courseList/fetch',
-      payload: {
-        uid: 4180,
-        role: 1,
-        list_type: list_type,
-      },
-    });
+    getCourseList(list_type);
   }
 
   const handleDelete = (item) => {
@@ -111,7 +102,6 @@ export const ManageCourseList = (props) => {
   }
 
   console.log("list")
-  console.log(list)
   console.log(showList)
   return (
     <div>
@@ -160,7 +150,6 @@ export const ManageCourseList = (props) => {
             <List
               size="large"
               rowKey="id"
-              loading={loading}
               pagination={paginationProps}
               dataSource={showList}
               renderItem={(item) => (
@@ -216,7 +205,4 @@ export const ManageCourseList = (props) => {
     </div>
   );
 };
-export default connect(({ courseList, loading }) => ({
-  courseList,
-  loading: loading.models.courseList,
-}))(ManageCourseList);
+export default ManageCourseList;

@@ -5,6 +5,7 @@ import CourseInfoView from './components/CouseInfoView';
 import HwListView from './components/HwListView';
 import HwInfoView from './components/HwInfoView';
 import styles from './style.less';
+import { RollbackOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 const { Item } = Menu;
 
 class CourseCenter extends Component {
@@ -15,7 +16,7 @@ class CourseCenter extends Component {
     const titleMap = {
       courseinfo: '课程详情',
       hwlist: '作业列表',
-      hwinfo: '作业详情',
+      hwinfo: <div><ArrowLeftOutlined  onClick={()=>{this.setState({selectKey:'hwlist'})}}/>&nbsp;&nbsp;&nbsp;作业详情</div>,
     };
     this.state = {
       mode: 'inline',

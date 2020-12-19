@@ -1,7 +1,7 @@
 import { ProfileOutlined, BookOutlined } from '@ant-design/icons';
 import { Avatar, Descriptions, Card, Divider } from 'antd';
-import { connect } from 'umi';
 import React, { Component } from 'react';
+import { postRequest } from '../../../../../utils/request';
 
 const { Meta } = Card;
 
@@ -10,41 +10,19 @@ class CourseInfoView extends Component {
     super(props);
     this.state = {
       sid: this.props.sid,
+      courseInfo:{},
     }
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-
     if (this.state.sid != undefined) {
-      dispatch({
-        type: 'courseCenter/fetchCourseInfo',
-        payload: {
-          sid: this.state.sid
-        },
-      })
+      postRequest('/section/info',{sid:this.state.sid},(data)=>{this.setState({courseInfo:data})});
     }
   }
-
-  getAvatarURL() {
-    const { courseInfo } = this.props;
-
-    if (courseInfo) {
-      if (courseInfo.avatar) {
-        return courseInfo.avatar;
-      }
-
-      const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-      return url;
-    }
-
-    return '';
-  }
-
 
   render() {
-    const { courseInfo } = this.props;
-
+    const courseInfo=this.state.courseInfo;
+    
     if (JSON.stringify(courseInfo) == "{}") {
       return "";
     }
@@ -77,6 +55,4 @@ class CourseInfoView extends Component {
   }
 }
 
-export default connect(({ courseCenter }) => ({
-  courseInfo: courseCenter.courseInfo,
-}))(CourseInfoView);
+export default CourseInfoView;

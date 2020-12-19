@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, history } from 'umi';
 import LoginForm from './components/Login';
 import styles from './style.less';
-import {postRequest} from '../../../utils/request';
-import { setUserinfo, getUserinfo } from '../../../utils/userinfo';
+import { notification } from 'antd';
+import { postRequest } from '../../../utils/request';
+import { setUserinfo } from '../../../utils/userinfo';
 import { setAuthority } from '@/utils/authority';
+import { stringify } from 'querystring';
 
 const { Tab, UserName, Password, Submit } = LoginForm;
 
@@ -32,11 +34,7 @@ const Login = () => {
       setAuthority(data.role==0?'user':'admin');
       history.push('/');
     }
-    function setLoadFalse(){
-      setLoading(false);
-      UserName.values='';
-    }
-    postRequest('/user/login',payload,callback,setLoadFalse);
+    postRequest('/user/login',payload,callback,()=>{setLoading(false);});
   };
   
   return (
@@ -87,12 +85,13 @@ const Login = () => {
           />
         </Tab>
         <div>
-          <Link to="/user/register">
+          <Link to="/user/register" style={{color:"white"}}>
             注册账户
           </Link>
           <a
             style={{
               float: 'right',
+              color:"white"
             }}
           >
             忘记密码

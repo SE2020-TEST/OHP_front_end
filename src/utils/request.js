@@ -56,13 +56,16 @@ const request = extend({
 
 const baseUrl='http://localhost:8080';
 
-export const postRequest=(url,data,callback,setLoadFalse)=>{
+export const postRequest=(url,data,callback,preprocess=()=>{})=>{
   let completeUrl=baseUrl+url;
   request(completeUrl,{
     method:'POST',
     data:data
   }).then(res=>{
-    setLoadFalse();
+    console.log("res")
+    console.log(res)
+
+    preprocess();
     if (res) {
       if (res.code == 0) {
         callback(res.data);

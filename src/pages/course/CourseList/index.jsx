@@ -10,37 +10,32 @@ import {
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect, history } from 'umi';
 import styles from './style.less';
-import { getAuthority } from '../../../utils/authority';
+import { postRequest } from '../../../utils/request';
+import { getUserinfo } from '../../../utils/userinfo';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const { Search } = Input;
 
 
-export const CourseList = (props) => {
-  const {
-    loading,
-    dispatch,
-    courseList: { list },
-  } = props;
-
-  useEffect(() => {
-    dispatch({
-      type: 'courseList/fetch',
-      payload: {
-        uid: 5180,
-        //role: getAuthority()[0] == 'user' ? 0 : 1,
-        role: 0,
-        list_type: 0,
-      },
-    });
-  }, [1]);
+export const CourseList = () => {
+  const [myList,setMyList]=useState([]);
+  function getCourseList(list_type){
+    const payload={
+      uid: getUserinfo().id,
+      role: 0,
+      list_type: list_type,
+    }
+    postRequest('/section/list',payload,(data)=>{setMyList(data);});
+  };
+  useEffect(()=>{
+    getCourseList(0);
+  },[]);
 
   const [showList, setShowList] = useState([]);
-
   useEffect(() => {
-    setShowList(list);
-  }, [list]);
+    setShowList(myList);
+  }, [myList]);
 
   const paginationProps = {
     showQuickJumper: true,
@@ -79,20 +74,8 @@ export const CourseList = (props) => {
     } else {
       list_type = 2;
     }
-    dispatch({
-      type: 'courseList/fetch',
-      payload: {
-        // uid: 123,
-        // role: 'student',
-        // list_type: list_type,
-        uid: 5180,
-        role: 0,
-        list_type: list_type,
-      },
-    });
+    getCourseList(list_type);
   }
-
-  console.log(showList)
 
   return (
     <div>
@@ -113,7 +96,6 @@ export const CourseList = (props) => {
             <List
               size="large"
               rowKey="id"
-              loading={loading}
               pagination={paginationProps}
               dataSource={showList}
               renderItem={(item) => (
@@ -149,7 +131,4 @@ export const CourseList = (props) => {
     </div>
   );
 };
-export default connect(({ courseList, loading }) => ({
-  courseList,
-  loading: loading.models.courseList,
-}))(CourseList);
+export default CourseList;
