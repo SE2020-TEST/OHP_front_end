@@ -78,7 +78,7 @@ const RegisterCourseModal = () => {
               <Input />
             </Form.Item>
             <Form.Item
-              name="intro"
+              name="description"
               label={"课程简介"}
               rules={[
                 {

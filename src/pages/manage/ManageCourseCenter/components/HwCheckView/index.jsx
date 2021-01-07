@@ -155,7 +155,7 @@ class HwCheckView extends Component {
                     </Form.Item>
                    
                     <Form.Item>
-                        <Button htmlType="submit" type="primary">发布新作业</Button>
+                        <Button htmlType="submit" type="primary">提交批改</Button>
                     </Form.Item>
                 </Form>
             </div>

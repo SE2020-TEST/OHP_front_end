@@ -144,6 +144,10 @@ class HwInfoView extends React.Component {
                     <div>
                         <div className={"hw-title"}>批改结果及参考答案</div>
                         <Divider />
+                        <div className={"hw-title1"}>参考答案</div>
+                        <Divider />
+                        <p>{this.string2html(hwInfo.refAnswer)}</p>                     
+                        <Divider />
                         <div className={"hw-title1"}>评分</div>
                         <Divider />
                         <p>{hwInfo.score}</p>
@@ -155,10 +159,6 @@ class HwInfoView extends React.Component {
                         <div className={"hw-title1"}>留言</div>
                         <Divider />
                         <p>{hwInfo.msg}</p>
-                        <Divider />
-                        <div className={"hw-title1"}>参考答案</div>
-                        <Divider />
-                        <p>{this.string2html(hwInfo.answer)}</p>
                         <Divider />
                     </div> : ""}
             </div>

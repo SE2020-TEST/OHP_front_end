@@ -63,6 +63,8 @@ export const postRequest=(url,data,callback,preprocess=()=>{})=>{
     data:data
   }).then(res=>{
     preprocess();
+    console.log("this is res")
+    console.log(res)
     if (res) {
       if (res.code == 0) {
         callback(res.data);

@@ -4,7 +4,7 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import { connect, FormattedMessage, formatMessage } from 'umi';
 import React, { Component } from 'react';
 import styles from './BaseView.less';
-import { getUserinfo } from '@/utils/userinfo';
+import { getUserinfo,setUserinfo } from '@/utils/userinfo';
 import { postRequest } from '@/utils/request';
 
 const { Option } = Select; // 头像组件 方便以后独立，增加裁剪之类的功能
@@ -53,6 +53,7 @@ class BaseView extends Component {
     postRequest('/user/update',value,(data)=>{
       message.success("更新个人信息成功!");
       console.log(data);
+      setUserinfo(data);
     })
 
     

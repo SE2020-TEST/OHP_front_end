@@ -122,8 +122,7 @@ class ManageCourseList extends React.Component {
               extra={searchContent}
             >
               <RegisterCourseModal />
-              <AddSectionModal forceUpdate={this.getCourseList} />
-
+              <AddSectionModal forceUpdate={()=>{this.getCourseList(this.state.list_type)}} />
               <List
                 size="large"
                 rowKey="id"

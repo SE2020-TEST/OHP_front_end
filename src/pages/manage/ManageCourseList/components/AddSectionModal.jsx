@@ -52,11 +52,10 @@ const AddSectionModal = (props) => {
       semester:value.semester
     }
 
-    function callback(data){
+    postRequest('/section/add',payload,(data)=>{
       message.success('新建课程成功');
       props.forceUpdate();//强制重新刷新
-    }
-    postRequest('/section/add',payload,callback)
+    });
   };
 
   return (
@@ -73,7 +72,7 @@ const AddSectionModal = (props) => {
               新建课程(选择学期)
             </Button>
       <Modal
-        title="注册新课程"
+        title="新建课程(选择学期)"
         visible={visible}
         onOk={handleOk}
         onCancel={handleCancel}

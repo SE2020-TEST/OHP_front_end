@@ -2,41 +2,42 @@ import {PageContainer} from '@ant-design/pro-layout';
 import React, {useState, useEffect} from 'react';
 import {Calendar, Badge, Card} from 'antd';
 import styles from './index.less';
+import { postRequest } from '@/utils/request';
+import { getUserinfo } from '@/utils/userinfo';
+import moment from 'moment';
+
 
 class CalendarView extends React.Component {
   constructor(props) {
     super(props);
+    this.state={
+      hwList:[],
+    }
     this.dateCellRender = this.dateCellRender.bind(this);
   }
 
+  componentDidMount(){
+    postRequest('/hw/stu/all',{uid:getUserinfo().id},(data)=>{this.setState({hwList:data})});
+  }
+
   getListData(value) {
-    let listData;
-    switch (value.date()) {
-      case 7:
-        listData = [
-          {type: 'error', content: '作业2迟交'},
-          {type: 'error', content: '作业3逾期'},
-        ];
-        break;
-      case 8:
-        listData = [
-          {type: 'warning', content: '作业0未完成'},
-          {type: 'success', content: '作业1按时完成'},
-        ];
-        break;
-      case 14:
-        listData = [
-          {type: 'warning', content: '作业0未完成'},
-          {type: 'success', content: '作业1按时完成'},
-        ];
-        break;
-      case 26:
-        listData = [
-          {type: 'warning', content: '作业0未完成'},
-          {type: 'success', content: '作业1按时完成'},
-        ];
-        break;
-      default:
+    let listData=[];
+    
+    let dayTime = moment(value).format('YYYY-MM-DD');
+    console.log(dayTime);
+    let len = this.state.hwList.length;
+    for (let i = 0; i < len; ++i) {
+      let hw = this.state.hwList[i];
+      let startTime = moment(hw.startTime, 'YYYY-MM-DD');
+      let deadline = moment(hw.deadline, 'YYYY-MM-DD');
+      if (hw.startTime == dayTime)
+        listData.push(
+          { type: 'success', content: `课程[${hw.sectionTitle}]的作业[${hw.title}]开始` },
+        )
+      if (hw.deadline == dayTime)
+        listData.push(
+          { type: 'success', content: `课程[${hw.sectionTitle}]的作业[${hw.title}]结束` },
+        )
     }
     return listData || [];
   }
