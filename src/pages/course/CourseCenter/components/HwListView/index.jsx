@@ -2,34 +2,36 @@ import React from "react";
 import { Card, List, Avatar, Space } from "antd";
 import { connect } from 'umi';
 import logo from './logo.svg';
+import { postRequest } from '@/utils/request';
+import { getUserinfo } from '@/utils/userinfo';
 
 class HwListView extends React.Component {
     constructor(props) {
         super(props);
+        super(props);
+        this.state={
+            sid:this.props.sid,
+            HwList:[],
+            
+        }
     }
 
     componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch({
-            type: 'courseCenter/fetchHwList',
-            payload: {
-                sid: this.props.parent.state.sid
-            },
-        })
+        postRequest('/hw/stu/list',{sid:this.state.sid,uid:getUserinfo().id},(data)=>{this.setState({HwList:data})});
     }
 
     onClicked(record) {
-        this.props.parent.goToHwInfoView("hwinfo", record.id);
+        console.log(record)
+        this.props.parent.goToHwInfoView("hwinfo", record.hwid);
     }
 
     render() {
-        const { hwList } = this.props;
-
+       
         return (
             <Card bordered={false}>
                 <List
                     itemLayout="horizontal"
-                    dataSource={hwList}
+                    dataSource={this.state.HwList}
                     pagination={{
                         pageSize: 7,
                         showSizeChanger: false,
@@ -44,7 +46,7 @@ class HwListView extends React.Component {
                                     <Space >
                                         <div><b>截止时间：</b>{item.deadline}</div>
                                         |
-                                        <div><b>计分：</b>{!item.hasCorrected ? '--' : item.score}/100</div>
+                                        <div><b>计分：</b>{item.state == 2 ? item.score : '--'}/100</div>
                                     </Space>
                                 }
                                 onClick={() => { this.onClicked(item) }}
@@ -57,6 +59,4 @@ class HwListView extends React.Component {
     }
 }
 
-export default connect(({ courseCenter }) => ({
-    hwList: courseCenter.hwList,
-}))(HwListView);
+export default HwListView;

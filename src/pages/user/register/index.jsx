@@ -1,9 +1,8 @@
 import { Form, Button, Col, Input, Popover, Progress, Row, Select, message } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { Link, connect, history, FormattedMessage, formatMessage } from 'umi';
+import { Link, connect, history, } from 'umi';
 import styles from './style.less';
-import request from 'umi-request';
-import { postRequest } from '../../../utils/request';
+import { postRequest } from '@/utils/request';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -65,17 +64,26 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
   );
 
   const onGetCaptcha = () => {
-    message.success("验证码是123")
-    let counts = 59;
-    setcount(counts);
-    interval = window.setInterval(() => {
-      counts -= 1;
+    if(form.getFieldValue('email')!=''){
+      let counts = 59;
       setcount(counts);
+      interval = window.setInterval(() => {
+        counts -= 1;
+        setcount(counts);
 
-      if (counts === 0) {
-        clearInterval(interval);
+        if (counts === 0) {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      let payload={
+        email:form.getFieldValue('email')
       }
-    }, 1000);
+      function callback(data){
+        message.success("已向您的邮箱发送验证码");
+      }
+      postRequest('/user/vcode',payload,callback);
+    }else message.error('还没输入邮箱!');
   };
 
   const getPasswordStatus = () => {
@@ -109,7 +117,6 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
     }
     console.log(payload)
     function callback(data){
-      //setLoading(false);
       history.push({
         pathname: '/user/register-result',
         state: {
@@ -117,30 +124,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
         },
       });
     }
-    function handleErr(res){
-      setLoading(false);
-    }
     postRequest('/user/register',payload,callback,()=>{setLoading(false);});
-
-
-    // request('http://localhost:8080/user/register', {
-    //   method: 'POST',
-    //   data: values,
-    // }).then(function(response) {
-    //   console.log(response);
-    //   if(response.code==0){
-    //     message.success("注册成功");
-    //     history.push({
-    //       pathname: '/user/register-result',
-    //       state: {
-    //         account:values.email,
-    //       },
-    //     });
-    //   }else{
-    //     message.error(response.message);
-    //   }
-    // })
-
   };
 
   const checkConfirm = (_, value) => {

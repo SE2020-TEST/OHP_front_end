@@ -1,7 +1,7 @@
 import { ProfileOutlined, BookOutlined } from '@ant-design/icons';
 import { Avatar, Descriptions, Card, Divider } from 'antd';
 import React, { Component } from 'react';
-import { postRequest } from '../../../../../utils/request';
+import { postRequest } from '@/utils/request';
 
 const { Meta } = Card;
 

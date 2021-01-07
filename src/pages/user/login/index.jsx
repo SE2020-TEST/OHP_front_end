@@ -3,8 +3,8 @@ import { Link, history } from 'umi';
 import LoginForm from './components/Login';
 import styles from './style.less';
 import { notification } from 'antd';
-import { postRequest } from '../../../utils/request';
-import { setUserinfo } from '../../../utils/userinfo';
+import { postRequest } from '@/utils/request';
+import { setUserinfo } from '@/utils/userinfo';
 import { setAuthority } from '@/utils/authority';
 import { stringify } from 'querystring';
 

@@ -87,7 +87,7 @@ class CourseCenter extends Component {
         return <CourseInfoView sid={this.state.sid}/>;
 
       case 'hwlist':
-        return <HwListView parent={this}/>;
+        return <HwListView parent={this} sid={this.state.sid}/>;
 
       case 'hwinfo':
         return <HwInfoView hwid={this.state.hwid}/>;
@@ -103,6 +103,8 @@ class CourseCenter extends Component {
   }
 
   goToHwInfoView(newKey,hwid) {
+    console.log(newKey)
+    console.log(hwid)
     this.setState({ selectKey: newKey });
     this.setState({hwid:hwid});
   }

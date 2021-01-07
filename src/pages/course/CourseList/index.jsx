@@ -10,8 +10,8 @@ import {
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect, history } from 'umi';
 import styles from './style.less';
-import { postRequest } from '../../../utils/request';
-import { getUserinfo } from '../../../utils/userinfo';
+import { postRequest } from '@/utils/request';
+import { getUserinfo } from '@/utils/userinfo';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -59,7 +59,7 @@ export const CourseList = () => {
   );
 
   function searchValueChange(value) {
-    setShowList(list.filter((item) => {
+    setShowList(myList.filter((item) => {
       return item.course.title.indexOf(value) != -1 || item.course.description.indexOf(value) != -1|| item.course.courseId.indexOf(value) != -1
       || item.endTime.indexOf(value) != -1 || item.semester.indexOf(value) != -1 
     }));

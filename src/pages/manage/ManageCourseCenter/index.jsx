@@ -31,7 +31,9 @@ class ManageCourseCenter extends Component {
       title:this.props.location.state.title,
       // sid:2,
       // title:"123",
-      hwid:undefined,
+      hwid:undefined,//作业id
+      uid:undefined,//写作业学生的id
+      hwdId:undefined,//提交作业的id
     };
   }
 
@@ -87,6 +89,9 @@ class ManageCourseCenter extends Component {
       });
     });
   };
+  setUid(uid){
+    this.setState({uid:uid});
+  }
   renderChildren = () => {
     const { selectKey } = this.state;
 
@@ -95,16 +100,16 @@ class ManageCourseCenter extends Component {
         return <CourseInfoView sid={this.state.sid}/>;
 
       case 'hwlist':
-        return <HwListView parent={this}/>;
+        return <HwListView  parent={this} sid={this.state.sid}/>;
 
       case 'hwinfo':
         return <HwInfoView parent={this} hwid={this.state.hwid}/>;
 
       case 'hwcreate':
-        return <HwCreateView/>;
+        return <HwCreateView parent={this} sid={this.state.sid}/>;
 
       case 'hwcheck':
-        return <HwCheckView hwid={this.state.hwid}/>;
+        return <HwCheckView parent={this} hwid={this.state.hwid} uid={this.state.uid} hwdId={this.state.hwdId}/>;
         
       case 'userlist':
         return <UserListView sid={this.state.sid}/>;
@@ -120,9 +125,16 @@ class ManageCourseCenter extends Component {
     this.setState({ selectKey: newKey });
   }
 
-  goToHwInfoView(newKey,hwid) {
-    this.setState({ selectKey: newKey });
-    this.setState({hwid:hwid});
+  goToHwCheckPage(newKey, uid, hwdId) {
+    this.setState({
+      selectKey: newKey,
+      uid: uid,
+      hwdId: hwdId
+    });
+  }
+
+  goToHwInfoView(newKey, hwid) {
+    this.setState({ selectKey: newKey, hwid: hwid });
   }
 
   render() {

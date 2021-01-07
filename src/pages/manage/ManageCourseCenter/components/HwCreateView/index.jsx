@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import BraftEditor from 'braft-editor'
 import './BraftEditor.css';
-import request from 'umi-request';
+import { postRequest } from '@/utils/request';
+
 
 class HwCreateView extends Component {
     constructor(props) {
@@ -19,20 +20,17 @@ class HwCreateView extends Component {
 
     handleSubmit = (value) => {
         //这里更新课程信息
+        value.sid=this.props.sid;
+        value.startTime = value.startTime.format('YYYY-MM-DD HH:mm:ss');
         value.deadline = value.deadline.format('YYYY-MM-DD HH:mm:ss');
-        value.requirement = this.state.HTMLContent;
-        value.answer = this.state.HTMLAnswer;
+        value.content = this.state.HTMLContent;
+        value.refAnswer = this.state.HTMLAnswer;
 
-        console.log(value)
-        
+        console.log(this.props);
+        console.log(value);
+        postRequest('/hw/add',value,()=>{
+            message.success('新建作业成功!')});
 
-        request.post('/hw/add',{data:value})
-        .then(function(res){
-            console.log(res)
-            if(res.code==0){
-                message.success('新建作业成功！');
-            }
-        })
     };
 
 
@@ -72,6 +70,18 @@ class HwCreateView extends Component {
                         <Input style={{ width: 500, }} />
                     </Form.Item>
                     <Form.Item
+                        name="startTime"
+                        label={"开始时间"}
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入开始时间!',
+                            },
+                        ]}
+                    >
+                        <DatePicker showTime disabledDate={disabledDate} />
+                    </Form.Item>
+                    <Form.Item
                         name="deadline"
                         label={"截止时间"}
                         rules={[
@@ -84,7 +94,7 @@ class HwCreateView extends Component {
                         <DatePicker showTime disabledDate={disabledDate} />
                     </Form.Item>
                     <Form.Item
-                        //name="content"
+                        name="content"
                         label={"作业要求"}
                         rules={[
                             {
@@ -104,7 +114,7 @@ class HwCreateView extends Component {
                         </Card>
                     </Form.Item>
                     <Form.Item
-                        name="answer"
+                        name="refAnswer"
                         label={"参考答案"}
                         rules={[
                             {

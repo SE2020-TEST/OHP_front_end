@@ -1,11 +1,11 @@
 import React from "react";
 import { Divider, Button, Card, Form, message } from "antd";
 import BraftEditor from 'braft-editor'
-import { connect } from 'umi';
 import { CheckOutlined } from '@ant-design/icons';
 import './BraftEditor.css';
 import './index.css'
-import request from 'umi-request';
+import { postRequest } from '@/utils/request';
+import { getUserinfo } from '@/utils/userinfo';
 
 
 class HwInfoView extends React.Component {
@@ -15,17 +15,12 @@ class HwInfoView extends React.Component {
             hwid: this.props.hwid,
             editorCommit: BraftEditor.createEditorState(''), // 设置编辑器初始内容
             HTMLCommit: '',
+            hwInfo:{},
         }
     }
 
     componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch({
-            type: 'courseCenter/fetchHwInfo',
-            payload: {
-                hwid: this.props.hwid,
-            },
-        })
+        postRequest('/hwdetail/info', { uid: getUserinfo().id, hwid: this.state.hwid },(data)=>{this.setState({hwInfo:data})});
     }
 
     validatorCommit = (rule, value, callback) => {
@@ -57,41 +52,25 @@ class HwInfoView extends React.Component {
             hwid: hwid,
             content: this.state.HTMLCommit
         };
-        
-        // dispatch({
-        //     type: 'courseCenter/commitHw',
-        //     payload: {
-        //         hwid: this.props.hwid,
-        //         content: this.state.HTMLCommit
-        //     },
-        // })
 
-        request.post('/hw/commit',{data:params})
-        .then(function(res){
-            console.log(res)
-            if(res.code==0){
-                message.success('提交作业成功！');
-                dispatch({
-                    type: 'courseCenter/fetchHwInfo',
-                    payload: {
-                        hwid: hwid,
-                    },
-                })
-            }
-        })
+        postRequest('/hw/commit',
+            {
+                uid: getUserinfo().id,
+                hwid: this.state.hwid,
+                answer: this.state.HTMLCommit
+            },
+            () => {
+                message.success('提交作业成功!');
+                postRequest('/hwdetail/info', { uid: getUserinfo().id, hwid: this.state.hwid }, (data) => { this.setState({ hwInfo: data }) });
+            });
     }
 
 
     render() {
-        const { editorCommit } = this.state;
-        const { hwInfo } = this.props;
+        const { editorCommit,hwInfo } = this.state;
 
-        console.log(hwInfo);
-
-        if (JSON.stringify(hwInfo) == "{}") {
-            return "";
-        }
-
+        console.log("get hwinfo")
+        console.log(hwInfo)
         return (
             <div>
                 <Divider />
@@ -111,15 +90,18 @@ class HwInfoView extends React.Component {
                 </div>
                 <Divider />
                 <div style={{ fontSize: 16, paddingBottom: 20 }}>
-                    <div style={{ float: "left" }}><b>截止时间：</b>{hwInfo.deadline}之前</div>
+                    <div style={{ float: "left" }}>
+                        <b>开始时间：</b>{hwInfo.startTime}之前&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>截止时间：</b>{hwInfo.deadline}之前
+                    </div>
                     <div style={{ float: "right" }}><b>提交：</b>一份上传文件</div>
                 </div>
                 <Divider />
-                <div className={"hw-title1"}>作业要求</div>
-                <Divider />
-                <p>{this.string2html(hwInfo.requirement)}</p>
-                <Divider />
                 <div className={"hw-title1"}>作业内容</div>
+                <Divider />
+                <p>{this.string2html(hwInfo.content)}</p>
+                <Divider />
+                <div className={"hw-title1"}>你的回答</div>
                 <Divider />
                 {hwInfo.state == 0 ?
                     <div id="submit-hw">
@@ -153,12 +135,12 @@ class HwInfoView extends React.Component {
                     </div>
                     :
                     <div id="hw-content">
-                        <p>{this.string2html(hwInfo.content)}</p>
+                        <p>{this.string2html(hwInfo.answer)}</p>
                     </div>
                 }
 
                 <Divider />
-                {hwInfo.hasCorrected ?
+                {hwInfo.state==2 ?
                     <div>
                         <div className={"hw-title"}>批改结果及参考答案</div>
                         <Divider />
@@ -184,6 +166,4 @@ class HwInfoView extends React.Component {
     }
 }
 
-export default connect(({ courseCenter }) => ({
-    hwInfo: courseCenter.hwInfo,
-}))(HwInfoView);
+export default HwInfoView;

@@ -4,6 +4,7 @@ import BraftEditor from 'braft-editor'
 import { connect } from 'umi';
 import './BraftEditor.css';
 import request from 'umi-request';
+import { postRequest } from '@/utils/request';
 
 
 class HwCheckView extends Component {
@@ -12,35 +13,42 @@ class HwCheckView extends Component {
         this.state = {
             editorComment: BraftEditor.createEditorState(''), // 设置编辑器初始内容
             HTMLComment: '',
+            hwInfo:{},
+
         }
     }
 
     componentDidMount() {
-        const { dispatch, hwid } = this.props;
-        dispatch({
-            type: 'courseCenter/fetchHwInfo',
-            payload: {
-                hwid: hwid,
-            },
-        })
+        console.log("props");
+        console.log(this.props); 
+        
+        postRequest('/hwdetail/info', {  hwid: this.props.hwid,uid:this.props.uid },(data)=>{
+            this.setState({hwInfo:data});
+            console.log('get info')
+            console.log(data);
+        });
     }
 
     handleSubmit = (value) => {
         value.comment = this.state.HTMLComment;
-        value.hwid=this.props.hwid;
+        value.hwd_id=this.props.hwdId;
 
         console.log(value)
-        request('/hw/check',{
-            method:'POST',
-            data:value
-        }).then(res=>{
-            console.log("res")
-            console.log(res)
-            if(res.code==0){
-                message.success("批改作业成功");
-            }else{
-                message.error("批改作业失败");
-            }
+        // request('/hw/check',{
+        //     method:'POST',
+        //     data:value
+        // }).then(res=>{
+        //     console.log("res")
+        //     console.log(res)
+        //     if(res.code==0){
+        //         message.success("批改作业成功");
+        //     }else{
+        //         message.error("批改作业失败");
+        //     }
+        // })
+
+        postRequest('/hw/correct',value,(data)=>{
+            message.success('批改作业成功!');
         })
       
     };
@@ -64,7 +72,7 @@ class HwCheckView extends Component {
 
     render() {
         const { editorComment } = this.state;
-        const { hwInfo } = this.props;
+        const { hwInfo } = this.state;
     
         if (JSON.stringify(hwInfo) == "{}") {
             return "";
@@ -78,21 +86,24 @@ class HwCheckView extends Component {
                 </div>
                 <Divider />
                 <div style={{ fontSize: 16, paddingBottom: 20 }}>
-                    <div style={{ float: "left" }}><b>截止时间：</b>{hwInfo.deadline}之前</div>
+                <div style={{ float: "left" }}>
+                        <b>开始时间：</b>{hwInfo.startTime}之前&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>截止时间：</b>{hwInfo.deadline}之前
+                    </div>
                     <div style={{ float: "right" }}><b>提交：</b>一份上传文件</div>
                 </div> 
-                <Divider />
-                <div className={"hw-title1"}>作业要求</div>
-                <Divider />
-                <p>{this.string2html(hwInfo.requirement)}</p>
                 <Divider />
                 <div className={"hw-title1"}>作业内容</div>
                 <Divider />
                 <p>{this.string2html(hwInfo.content)}</p>
                 <Divider />
-                <div className={"hw-title1"}>参考答案</div>
+                <div className={"hw-title1"}>学生答案</div>
                 <Divider />
                 <p>{this.string2html(hwInfo.answer)}</p>
+                <Divider />
+                <div className={"hw-title1"}>参考答案</div>
+                <Divider />
+                <p>{this.string2html(hwInfo.refAnswer)}</p>
                 <Divider />
                 <div className={"hw-title1"}>批改</div>
                 <Divider />
@@ -152,6 +163,4 @@ class HwCheckView extends Component {
     }
 }
 
-export default connect(({ courseCenter }) => ({
-    hwInfo: courseCenter.hwInfo,
-}))(HwCheckView);
+export default HwCheckView;

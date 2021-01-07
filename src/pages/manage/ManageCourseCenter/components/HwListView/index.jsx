@@ -3,24 +3,26 @@ import { Card, List, Avatar, Space, Button } from "antd";
 import { connect } from 'umi';
 import { EditOutlined } from "@ant-design/icons";
 import logo from './logo.svg';
+import { postRequest } from '@/utils/request';
+import { getUserinfo } from '@/utils/userinfo';
+
 
 class HwListView extends React.Component {
     constructor(props) {
         super(props);
+        this.state={
+            sid:this.props.sid,
+            HwList:[],
+            
+        }
     }
 
     componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch({
-            type: 'courseCenter/fetchHwList',
-            payload: {
-                sid: this.props.parent.state.sid
-            },
-        })
+        postRequest('/hw/tea/list',{sid:this.state.sid,uid:getUserinfo().id},(data)=>{this.setState({HwList:data})});
     }
 
     onClicked(record) {
-        this.props.parent.goToHwInfoView("hwinfo", record.id);
+        this.props.parent.goToHwInfoView("hwinfo", record.hwid);
     }
 
     goToHwCreateView(){
@@ -28,13 +30,12 @@ class HwListView extends React.Component {
     }
 
     render() {
-        const { hwList } = this.props;
-
+        console.log(this.state.HwList)
         return (
             <Card title={<Button icon={<EditOutlined/>} onClick={()=>this.goToHwCreateView()}>发布新作业</Button>}bordered={false}>
                 <List
                     itemLayout="horizontal"
-                    dataSource={hwList}
+                    dataSource={this.state.HwList}
                     pagination={{
                         pageSize: 7,
                         showSizeChanger: false,
@@ -46,10 +47,10 @@ class HwListView extends React.Component {
                                 avatar={<Avatar src={logo} size="small" />}
                                 title={<b>{item.title}</b>}
                                 description={
-                                    <Space >
-                                        <div><b>截止时间：</b>{item.deadline}</div>
+                                    <Space > 
+                                        <div><b>开始时间：</b>{item.startTime}</div>
                                         |
-                                        <div><b>计分：</b>{!item.hasCorrected ? '--' : item.score}/100</div>
+                                        <div><b>截止时间：</b>{item.deadline}</div>
                                     </Space>
                                 }
                                 onClick={() => { this.onClicked(item) }}
@@ -62,6 +63,4 @@ class HwListView extends React.Component {
     }
 }
 
-export default connect(({ courseCenter }) => ({
-    hwList: courseCenter.hwList,
-}))(HwListView);
+export default HwListView;

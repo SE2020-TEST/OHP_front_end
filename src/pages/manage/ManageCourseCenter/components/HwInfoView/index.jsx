@@ -2,6 +2,7 @@ import React from "react";
 import { Divider, Button, Space, message, Table, Tabs, Progress, Card, Avatar } from "antd";
 import { connect } from 'umi';
 import './index.css'
+import { postRequest } from '@/utils/request';
 
 const { TabPane } = Tabs;
 
@@ -9,64 +10,30 @@ class HwInfoView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // hwTitle: undefined,
-            // hwId: undefined,
- 
-            hwTitle: "作业0",
             hwId: this.props.hwid,
-            submitHwList:[],
-            userList:[],
+            hwInfo:{},
+            submission:{},
         }
     }
 
     componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch({
-            type: 'courseCenter/fetchHwInfo',
-            payload: {
-                hwid: this.props.hwid,
-            },
+        postRequest('/hw/info', {  hwid: this.state.hwId },(data)=>{
+            this.setState({hwInfo:data});
         });
-
-        dispatch({
-            type: 'manageCourseCenter/fetchSubmission',
-            payload: {
-                hwid: this.props.hwid,
-            },
-        });
-
-        let list = [];
-        for (let i = 0; i < 47; ++i) {
-            list.push({
-                key: i,
-                user: `user${i}`,
-                time: `10月12日 15:12`,
-                late: i%4===0?`按时提交`:`迟交`,
-                score: '--/10',
-            });
-        }
-        this.setState({submitHwList: list});
-
-        list=[];
-        for (let i = 0; i < 13; ++i) {
-            list.push({
-                key: i,
-                user: `user${i}`,
-                id: `518021910${i}`,
-                class: 'F1803704',
-                role: i%7!==0?'学生':'助教',
-            });
-        }
-        this.setState({userList: list});
+        postRequest('/hw/submission', { hw_id: this.state.hwId }, (data) => {
+            this.setState({submission:data});
+        })
     }
 
     onClicked(record) {
         console.log(record);
     }
 
-    goToHwCheckPage(hwid){
-        console.log("goto check:"+hwid);
-        this.props.parent.changeView('hwcheck');
+    goToHwCheckPage(record){
+        
+        console.log("goto check:");
+        console.log(record)
+        this.props.parent.goToHwCheckPage('hwcheck', record.stuId, record.hwdetailId);
     }
 
     string2html(htmlString) {
@@ -85,19 +52,22 @@ class HwInfoView extends React.Component {
         const hwColumns = [
             {
                 title: <b>提交者姓名</b>,
-                render: (text,record) => {
-                    return record.user.name;
-                }
+                dataIndex: 'username',
+               
+            },
+            {
+                title: <b>学号</b>,
+                dataIndex: 'stuId',
+                
+                
             },
             {
                 title: <b>完成情况</b>,
-                dataIndex: 'state',
+                dataIndex: 'isLate',
                 render: (text) => {
-                    if(text==0)return "未完成";
-                    else if(text==1)return "按时提交";
-                    else if(text==2)return "迟交";
+                    if (text == 0) return "按时提交";
+                    else return "迟交";
                 }
-
             },
             {
                 title: <b>批改情况</b>,
@@ -112,7 +82,7 @@ class HwInfoView extends React.Component {
                 dataIndex: 'operation',
                 render: (text, record) => {
                     if (record.hasCorrected) return <div>无需操作</div>;
-                    else return <Button onClick={() => { this.goToHwCheckPage(record.id) }}>进入批改</Button>
+                    else return <Button onClick={() => { this.goToHwCheckPage(record) }}>进入批改</Button>
                 }
 
             },
@@ -133,30 +103,28 @@ class HwInfoView extends React.Component {
             },
             {
                 title: <b>学号</b>,
-                dataIndex: 'userId',
+                dataIndex: 'id',
             },
             {
                 title: <b>邮箱</b>,
                 dataIndex: 'email',
             },
             {
-                title: <b>身份</b>,
-                dataIndex: 'role',
-                render:(text)=>{
-                    return text==0?'学生':'教师';
-                }
+                title: <b>电话</b>,
+                dataIndex: 'phone',
             },
         ];
 
-        const { hwInfo, submission } = this.props;
 
-        if (JSON.stringify(hwInfo) == "{}" || JSON.stringify(submission) == "{}"
-            || !Array.isArray(submission.hwDetialList) || !Array.isArray(submission.notSubmitUserList)) {
-            return "";
-        }
+        const { hwInfo, submission } = this.state;
 
         console.log("submit")
+        console.log(hwInfo);
         console.log(submission)
+
+        if (JSON.stringify(submission) == "{}"){
+            return "";
+        }
 
         return (
             <div>
@@ -166,17 +134,20 @@ class HwInfoView extends React.Component {
                 </div>
                 <Divider />
                 <div style={{ fontSize: 16, paddingBottom: 20 }}>
-                    <div style={{ float: "left" }}><b>截止时间：</b>{hwInfo.deadline}之前</div>
+                <div style={{ float: "left" }}>
+                        <b>开始时间：</b>{hwInfo.startTime}之前&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>截止时间：</b>{hwInfo.deadline}之前
+                    </div>
                     <div style={{ float: "right" }}><b>提交：</b>一份上传文件</div>
                 </div>
                 <Divider />
-                <div className={"hw-title1"}>作业要求</div>
+                <div className={"hw-title1"}>作业内容</div>
                 <Divider />
-                <p>{this.string2html(hwInfo.requirement)}</p>
+                <p>{this.string2html(hwInfo.contents)}</p>
                 <Divider />
                 <div className={"hw-title1"}>参考答案</div>
                 <Divider />
-                <p>{this.string2html(hwInfo.answer)}</p>
+                <p>{this.string2html(hwInfo.refAnswer)}</p>
                 <Divider />
                 <div className={"hw-title1"}>提交作业情况</div>
                 <Divider/>
@@ -193,11 +164,10 @@ class HwInfoView extends React.Component {
                     <TabPane tab="提交作业列表" key="1">
                         <Table 
                             columns={hwColumns}
-                            dataSource={submission.hwDetialList}
-                            bordered
+                            dataSource={submission.hwCommitList}
                             pagination={paginationProps}
                             footer={() => {
-                                return <div>共<b>{submission.hwDetialList.length}</b>条记录</div>
+                                return <div>共<b>{submission.hwCommitList.length}</b>条记录</div>
                             }}
                             rowClassName={(record, index) => {
                                 let className = 'light-row';
@@ -209,7 +179,7 @@ class HwInfoView extends React.Component {
                     <TabPane tab="未提交用户列表" key="2">
                         <Table 
                             columns={userColumns}
-                            dataSource={submission.notSubmitUserList}
+                            dataSource={submission.userList}
                             onRow={record => {
                                 return {
                                     onClick: () => {this.onClicked(record);}, // 点击行
@@ -217,7 +187,7 @@ class HwInfoView extends React.Component {
                             }}
                             pagination={paginationProps}
                             footer={() => {
-                                return <div>共<b>{submission.notSubmitUserList.length}</b>条记录</div>
+                                return <div>共<b>{submission.userList.length}</b>条记录</div>
                             }}
                         />
                     </TabPane>

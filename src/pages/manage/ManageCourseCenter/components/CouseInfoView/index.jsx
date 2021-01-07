@@ -3,7 +3,7 @@ import { Button, Input, Select, Upload, Form, message, Tooltip } from 'antd';
 import React, { Component } from 'react';
 import styles from './index.less';
 import request from 'umi-request';
-import { postRequest } from '../../../../../utils/request';
+import { postRequest } from '@/utils/request';
 
 const { Option } = Select;
 
@@ -17,10 +17,10 @@ const AvatarView = ({ avatar }) => (
     </div>
     <Upload showUploadList={false}>
       <div className={styles.button_view}>
-        <Button>
+        {/* <Button>
           <UploadOutlined />
           更换头像
-        </Button>
+        </Button> */}
       </div>
     </Upload>
   </>
@@ -44,26 +44,9 @@ class CourseInfoView extends Component {
   }
 
   handleSubmit = (value) => {
-    const { courseInfo } = this.props;
-
-    //这里更新课程信息
-    let params={};
-    params.cid=value.cid;
-    params.avatar=courseInfo.course.avatar;
-    params.title=value.title;
-    params.textbook=value.textbook;
-    params.intro=value.description;
-
-
-    request.post('http://localhost:8080/course/update',{data:params})
-    .then(function(res){
-      console.log(res);
-      if(res.code==0){
-        message.success("更新课程信息成功");
-      }else{
-        message.error(res.message);
-      }
-    })
+    postRequest('/course/update',value,(data)=>{
+      message.success('更新课程成功！');
+    });
   };
   
   beforeUpload(file) {

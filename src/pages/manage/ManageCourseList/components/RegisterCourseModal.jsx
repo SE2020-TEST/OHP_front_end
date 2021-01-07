@@ -1,6 +1,7 @@
 import { Modal, Button, Form, Tooltip, Input, Select, message } from 'antd';
 import { PlusOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import request from 'umi-request';
+import { postRequest } from '@/utils/request';
 
 const { Option } = Select;
 
@@ -8,19 +9,12 @@ const { Option } = Select;
 const RegisterCourseModal = () => {
   const [visible, setVisible] = React.useState(false);
   const [confirmLoading, setConfirmLoading] = React.useState(false);
-  const [modalText, setModalText] = React.useState('Content of the modal');
 
   const showModal = () => {
     setVisible(true);
   };
 
   const handleOk = () => {
-    // setModalText('The modal will be closed after two seconds');
-    // setConfirmLoading(true);
-    // setTimeout(() => {
-    //   setVisible(false);
-    //   setConfirmLoading(false);
-    // }, 2000);
     setVisible(false);
   };
 
@@ -30,40 +24,8 @@ const RegisterCourseModal = () => {
 
   const handleSubmit = (value) => {
     //这里注册课程
-    let params={};
-    params.cid=value.cid;
-    params.avatar="";
-    params.title=value.title;
-    params.textbook=value.textbook;
-    params.intro=value.description;
-
-    console.log(params);
-
-    request.post('http://localhost:8080/course/register',{data:params})
-    .then(function(res){
-      console.log(res);
-      if(res.code==0){
-        message.success("注册课程成功");
-      }else{
-        message.error(res.message);
-      }
-    })
+    postRequest('/course/register',value,(data)=>{message.success(`注册课号为${data.courseId}的课程成功！`);})
   };
-
-  const validatorCid = (rule, value, callback) => {
-    request.post('http://localhost:8080/course/checkcid', {
-      data: {
-        cid: value,
-      },
-    }).then(function(response) {
-      console.log(response);
-      if(response.code==0&&response.data==true){
-        callback();
-      }else{
-        callback("该课号与已有课号重复！");
-      }
-    })
-  }
 
   return (
     <>
@@ -84,15 +46,25 @@ const RegisterCourseModal = () => {
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
-        // width={800}
       >
-        {/* <p>{modalText}</p> */}
         <div style={{padding:"10px 50px"}}>
         <Form
             layout="vertical"
             onFinish={handleSubmit}
             hideRequiredMark
           >
+            <Form.Item
+              name="cid"
+              label={"课号"}
+              rules={[
+                {
+                  required: true,
+                  message: '请输入课号!',
+                },
+              ]}
+            >
+              <Input/>
+            </Form.Item>
             <Form.Item
               name="title"
               label={"课程名称"}
@@ -106,44 +78,7 @@ const RegisterCourseModal = () => {
               <Input />
             </Form.Item>
             <Form.Item
-              name="cid"
-              label={"课号"}
-              rules={[
-                {
-                  required: true,
-                  message: '请输入课号!',
-                },
-                {
-                  validator: validatorCid,
-                },
-              ]}
-            >
-              <Input/>
-            </Form.Item>
-            <Form.Item
-              name="semester"
-              label={"学期"}
-              rules={[
-                {
-                  required: true,
-                  message: '请输入学期!',
-                },
-              ]}
-            >
-              <Select style={{ width: 120 }}>
-                <Option value="2019春季">2019春季</Option>
-                <Option value="2019夏季">2019夏季</Option>
-                <Option value="2019秋季">2019秋季</Option>
-                <Option value="2020春季">2020春季</Option>
-                <Option value="2020夏季">2020夏季</Option>
-                <Option value="2020秋季">2020秋季</Option>
-                <Option value="2021春季">2021春季</Option>
-                <Option value="2021夏季">2021夏季</Option>
-                <Option value="2021秋季">2021秋季</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="description"
+              name="intro"
               label={"课程简介"}
               rules={[
                 {
@@ -168,7 +103,7 @@ const RegisterCourseModal = () => {
             </Form.Item>
             <Form.Item>
               <Button htmlType="submit" type="primary">
-                更新课程信息
+                注册新课程
               </Button>
             </Form.Item>
           </Form>

@@ -1,25 +1,41 @@
-import { Modal, Button, Form, Tooltip, Input, Select, message } from 'antd';
+import { Modal, Button, Form, Tooltip, Input, Select, message, DatePicker } from 'antd';
 import { PlusOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import request from 'umi-request';
+import moment from 'moment';
+import { getUserinfo } from '@/utils/userinfo';
+import { postRequest } from '@/utils/request';
 
 const { Option } = Select;
 
-const AddSectionModal = () => {
+//日期只能往后选择
+function range(start, end) {
+  const result = [];
+  for (let i = start; i < end; i++) {
+    result.push(i);
+  }
+  return result;
+}
+
+function disabledDate(current) {
+  // Can not select days before today and today
+  return current && current < moment().endOf('day');
+}
+
+function disabledDateTime() {
+  return {
+    disabledHours: () => range(0, 24).splice(4, 20),
+    disabledMinutes: () => range(30, 60),
+    disabledSeconds: () => [55, 56],
+  };
+}
+
+const AddSectionModal = (props) => {
   const [visible, setVisible] = React.useState(false);
-  const [confirmLoading, setConfirmLoading] = React.useState(false);
-  const [modalText, setModalText] = React.useState('Content of the modal');
 
   const showModal = () => {
     setVisible(true);
   };
 
   const handleOk = () => {
-    setModalText('The modal will be closed after two seconds');
-    // setConfirmLoading(true);
-    // setTimeout(() => {
-    //   setVisible(false);
-    //   setConfirmLoading(false);
-    // }, 2000);
     setVisible(false);
   };
 
@@ -28,25 +44,19 @@ const AddSectionModal = () => {
   };
 
   const handleSubmit = (value) => {
-    //这里更新个人信息
-    console.log(value)
+    //这里添加新section
+    let payload={
+      cid:value.cid,
+      uid:getUserinfo().id,
+      endTime:value.endTime.format('YYYY-MM-DD'),
+      semester:value.semester
+    }
 
-    request.post('http://localhost:8080/section/add', {
-      data: {
-        cid: value.cid,
-        semester: value.semester,
-        endTime: "2020.12.12",
-        uid:"4180",
-      },
-    }).then(function(response) {
-      console.log(response);
-      if(response.code==0){
-        message.success("新建课程成功");
-      }else{
-        message.error(response.message);
-      }
-    })
-    
+    function callback(data){
+      message.success('新建课程成功');
+      props.forceUpdate();//强制重新刷新
+    }
+    postRequest('/section/add',payload,callback)
   };
 
   return (
@@ -66,10 +76,8 @@ const AddSectionModal = () => {
         title="注册新课程"
         visible={visible}
         onOk={handleOk}
-        confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        {/* <p>{modalText}</p> */}
         <div style={{ padding: "10px 50px" }}>
           <Form
             layout="vertical"
@@ -111,9 +119,23 @@ const AddSectionModal = () => {
                 <Option value="2021秋季">2021秋季</Option>
               </Select>
             </Form.Item>
+            <Form.Item
+              name="endTime"
+              label={"截止时间"}
+              rules={[
+                {
+                  required: true,
+                  message: '请输入截止时间!',
+                },
+              ]}
+            >
+              <DatePicker
+                disabledDate={disabledDate}
+                disabledTime={disabledDateTime} />
+            </Form.Item>
             <Form.Item>
               <Button htmlType="submit" type="primary">
-                更新课程信息
+                新建课程
               </Button>
             </Form.Item>
           </Form>
