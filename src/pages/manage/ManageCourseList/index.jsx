@@ -36,6 +36,7 @@ class ManageCourseList extends React.Component {
 
     this.radioChange=this.radioChange.bind(this);
     this.handleDelete=this.handleDelete.bind(this);
+    this.searchValueChange=this.searchValueChange.bind(this);
   }
 
   getCourseList(list_type){
@@ -53,10 +54,12 @@ class ManageCourseList extends React.Component {
 
 
   searchValueChange(value) {
-    setShowList(myList.filter((item) => {
-      return item.course.title.indexOf(value) != -1 || item.course.description.indexOf(value) != -1|| item.course.courseId.indexOf(value) != -1
-      || item.endTime.indexOf(value) != -1 || item.semester.indexOf(value) != -1 
-    }));
+    this.setState({
+      showList: this.state.myList.filter((item) => {
+        return item.course.title.indexOf(value) != -1 || item.course.description.indexOf(value) != -1 || item.course.courseId.indexOf(value) != -1
+          || item.endTime.indexOf(value) != -1 || item.semester.indexOf(value) != -1
+      })
+    });
   }
 
   radioChange(e) {
@@ -98,7 +101,7 @@ class ManageCourseList extends React.Component {
   
     const searchContent = (
       <div>
-        <Search className={styles.extraContentSearch} placeholder="请输入" onSearch={(value) => searchValueChange(value)} />
+        <Search className={styles.extraContentSearch} placeholder="请输入" onSearch={(value) =>this.searchValueChange(value)} />
       </div>
     );
 

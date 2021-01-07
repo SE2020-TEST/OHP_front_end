@@ -1,51 +1,23 @@
 import { FormattedMessage, formatMessage,connect } from 'umi';
 import React, { Component } from 'react';
 import { Form,Input,Button,message } from 'antd';
+import { getUserinfo } from '@/utils/userinfo';
+import { postRequest } from '@/utils/request';
 
-const passwordStrength = {
-  strong: (
-    <span className="strong">
-      <FormattedMessage id="accountsettings.security.strong" defaultMessage="Strong" />
-    </span>
-  ),
-  medium: (
-    <span className="medium">
-      <FormattedMessage id="accountsettings.security.medium" defaultMessage="Medium" />
-    </span>
-  ),
-  weak: (
-    <span className="weak">
-      <FormattedMessage id="accountsettings.security.weak" defaultMessage="Weak" />
-      Weak
-    </span>
-  ),
-};
 
 class SecurityView extends Component {
   handleSubmit = (value) => {
     //这里更新密码
-    console.log(value)
-
-    message.success(
-      formatMessage({
-        id: 'accountsettings.basic.updatePw.success',
-      }),
-    );
+    postRequest('/user/password',{uid:getUserinfo().userId,password:value.newpassword},()=>{
+      message.success('修改密码成功!');
+    })
   };
 
   validatorPassword = (rule, value, callback) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'accountSettings/fetchPassword',
-      payload: {
-        password: value
-      },
-    }).then((res) => {
-      if (res.code == true)
-        callback();
+    postRequest('/user/checkpwd', { uid: getUserinfo().userId, password: value }, (data) => {
+      if (data) callback();
       else callback('原密码输入错误!');
-    }
-    )
+    })
   }
 
   render() {
@@ -123,4 +95,4 @@ class SecurityView extends Component {
   }
 }
 
-export default connect(() => ({}))(SecurityView);
+export default SecurityView;
