@@ -17,12 +17,13 @@ class CalendarView extends React.Component {
   }
 
   componentDidMount(){
-    postRequest('/hw/stu/all',{uid:getUserinfo().id},(data)=>{this.setState({hwList:data})});
+    if (getUserinfo().role == 0)
+      postRequest('/hw/stu/all', { uid: getUserinfo().id }, (data) => { this.setState({ hwList: data }) });
   }
 
   getListData(value) {
     let listData=[];
-    
+
     let dayTime = moment(value).format('YYYY-MM-DD');
     console.log(dayTime);
     let len = this.state.hwList.length;
